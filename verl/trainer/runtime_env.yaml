@@ -1,0 +1,5 @@
+working_dir: ./
+excludes: ["/.git/", "/*.log", "/qwen7B_grid_search_all_18k_vanilla_pure_remove_train_gcs-4_lr-1e-05_epoch-4/", "/TinyZero_Dafny_0403_ckpts/", "/outputs/", "/dataset8k_pure_remove/", "/trash/", "/wandb/"]
+env_vars:
+  TORCH_NCCL_AVOID_RECORD_STREAMS: "1"
+  VLLM_ATTENTION_BACKEND: "XFORMERS"
