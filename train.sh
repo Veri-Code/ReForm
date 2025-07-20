@@ -7,15 +7,7 @@ BATCH_SIZE=128
 PPO_MINI_BATCH_SIZE=16  
 TENSOR_MODEL_PARALLEL_SIZE=1
 
-export WANDB_API_KEY=2ca4169be643483a1a1694f52e6e0a90a594a021
-export https_proxy=https://yanchuanhao:EQpLPhbmBNxQWEW5TAKHj9tLlG65mnZLuYrl5ud407Y4LREBN8bRDf2sWSOs@aliyun-proxy.pjlab.org.cn:13128
-export http_proxy=https://yanchuanhao:EQpLPhbmBNxQWEW5TAKHj9tLlG65mnZLuYrl5ud407Y4LREBN8bRDf2sWSOs@aliyun-proxy.pjlab.org.cn:13128
-export HTTP_PROXY=https://yanchuanhao:EQpLPhbmBNxQWEW5TAKHj9tLlG65mnZLuYrl5ud407Y4LREBN8bRDf2sWSOs@aliyun-proxy.pjlab.org.cn:13128
-export HTTPS_PROXY=https://yanchuanhao:EQpLPhbmBNxQWEW5TAKHj9tLlG65mnZLuYrl5ud407Y4LREBN8bRDf2sWSOs@aliyun-proxy.pjlab.org.cn:13128
-export no_proxy=localhost,127.0.0.1
-export no_proxy="localhost, 127.0.0.1,*local"
-
-MODEL_PATH="/oss/public/user/yanch/sft_ckpts/sft_0.5B" # Adjust if you want to use the 7B model or another
+MODEL_PATH="sft_ckpts/sft_0.5B" # Adjust if you want to use the 7B model or another
 TRAIN_FILE="dataset/train.parquet"
 EVAL_FILE="dataset/test.parquet"
 

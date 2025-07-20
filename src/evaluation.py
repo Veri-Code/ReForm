@@ -97,17 +97,18 @@ def process_single_index(folder_name, index, BoN=1):
             gt_code, 
             exp_name = 'test_score',
             index = index, 
-            output_dir="/nas/shared/sys2/huangxuhan/eval_log/eval_plot/",
+            output_dir="/nas/shared/sys2/liyizhi/folder-0709/eval_log/eval_plot_2/",
             eval_plot=True
             )
+        # print(scores[idx//BoN][idx%BoN])
         # # # delete all files in the folder
-    # if scores[idx//BoN][idx%BoN][8] != 1:
-    delete_dir = os.path.join("/nas/shared/sys2/huangxuhan/eval_log/eval_plot/", str(index))
-    for file in os.listdir(delete_dir):
-        if os.path.isdir(os.path.join(delete_dir, file)):
-            shutil.rmtree(os.path.join(delete_dir, file))
-        else:
-            os.remove(os.path.join(delete_dir, file))
+    if scores[idx//BoN][idx%BoN][8] != 1:
+        delete_dir = os.path.join("/nas/shared/sys2/liyizhi/folder-0709/eval_log/eval_plot_2/", str(index))
+        for file in os.listdir(delete_dir):
+            if os.path.isdir(os.path.join(delete_dir, file)):
+                shutil.rmtree(os.path.join(delete_dir, file))
+            else:
+                os.remove(os.path.join(delete_dir, file))
     return scores
 
 def count_result_parallel(folder_name,BoN, max_workers=8):
@@ -115,8 +116,8 @@ def count_result_parallel(folder_name,BoN, max_workers=8):
     print(f"Processing folder: {folder_name} with {max_workers} workers")
     
     # Create a list of indices to process
-    indices = list(range(512))  # You can adjust this range as needed
-    
+    # indices = list(range(512))  # You can adjust this range as needed
+    indices = list(range(300))
     processed_count = 0
     skipped_count = 0
     total_scores = []
@@ -140,6 +141,7 @@ def count_result_parallel(folder_name,BoN, max_workers=8):
     
     final_scores = {}
     step_num = len(total_scores[0].keys()) 
+    # step_num = 40
     key = list(total_scores[0].keys())[0]
     shot_num = len(total_scores[0][key].keys()) 
     for step in range(step_num):
@@ -163,36 +165,17 @@ if __name__ == "__main__":
     parser.add_argument('--parallel', default=True, help='Use parallel processing')
     parser.add_argument('--workers', type=int, default=8, help='Number of worker threads (default: 8)')
     
+    parser.add_argument('--folder_names', nargs='+', required=True, help='List of folder names')
+
     args = parser.parse_args()
     cumulative_scores = {}
 
-    folder_names = [
-        "/nas/shared/sys2/liyizhi/full_log/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl",
-        "/nas/shared/sys2/chefengdi/dafny_full_log/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0entropy_0.01kl_xh1",
-        "/nas/shared/sys2/chefengdi/dafny_full_log/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0.01entropy_0.01kl_xh1"
-    ]
-
-    # exp_names = [
-    #     "/nas/shared/sys2/chefengdi/eval_log/dafny_bench_3B_8shots/3B_prevent_hacking_kl0_lr1e-5_BoN16",
-    #     "/nas/shared/sys2/chefengdi/eval_log/dafny_bench_3B_8shots/3B_prevent_hacking_kl005_lr1e-5_BoN32",
-    #     "/nas/shared/sys2/chefengdi/eval_log/dafny_bench_3B_8shots/DLC_4nodes_3B_reward_naive_0609_v5",
-    # ]
-    # folder_names =[]
-    # for folder in exp_names:
-    #     for file in os.listdir(folder):
-    #         folder_names.append(os.path.join(folder, file))
-
-    # folder_names = [
-    #     "/nas/shared/sys2/liyizhi/full_log/xin_grpo_1.5B_0506_Bo8_reward_subgtv1.1",
-    #     "/nas/shared/sys2/liyizhi/full_log/xin_grpo_1.5B_0506_Bo8_reward_subgt_hacking_check",
-    #     "/nas/shared/sys2/liyizhi/full_log/DLC_4nodes_1.5B_reward_naive_0513",
-    #     "/nas/shared/sys2/liyizhi/full_log/DLC_4nodes_1.5B_reward_naive2",
-    # ]
+    folder_names = args.folder_names
 
 
     BoN = 1
     max_step_num =0 
-    local_dir = "/cpfs04/user/huangxuhan_p/log_analysis/kl"
+    local_dir = "eval_log/"
     import datetime
 
     x  = datetime.datetime.now()
@@ -216,34 +199,6 @@ if __name__ == "__main__":
         print("exp_name: ", exp_name)
         total_scores = count_result_parallel(folder_name,BoN=BoN, max_workers=args.workers)
         
-        # pos 3, 14 how many equal to -1
-        pos3_count = 0
-        pos14_count = 0
-        total_count = 0
-        
-        # Count -1 values at positions 3 and 14
-        for step_key in total_scores.keys():
-            for shot_key in total_scores[step_key].keys():
-                for score_list in total_scores[step_key][shot_key]:
-                    if len(score_list) > 8 and score_list[8] == -1:
-                        pos3_count += 1
-                    # if len(score_list) > 13 and score_list[13] == -1:
-                    #     pos14_count += 1
-                    total_count += 1    
-        
-        print("pos 3 count: ", pos3_count)
-        print("pos 14 count: ", pos14_count)
-        print("total count: ", total_count)
-
-        # change pos 3, 14 to 0 if it is -1
-        for step_key in total_scores:
-            for shot_key in total_scores[step_key]:
-                for score_list in total_scores[step_key][shot_key]:
-                    if len(score_list) > 3 and score_list[8] == -1:
-                        score_list[8] = 0
-                    # if len(score_list) > 13 and score_list[13] == -1:
-                    #     score_list[13] = 0
-
         step_num = len(total_scores.keys())
         max_step_num = max(step_num, max_step_num)
         num_key = list(total_scores.keys())[0]
@@ -269,6 +224,8 @@ if __name__ == "__main__":
         with open(os.path.join(score_dir, f"{exp_name}_scores_{date}.json"), "w") as f:
             json.dump(cumluative_scores_copy, f)
     
+    exit()
+
     if "saves" in cumulative_scores:
         reordered_results = {}
         for exp_name in cumulative_scores: 
@@ -331,7 +288,7 @@ if __name__ == "__main__":
                             reordered_cumulative_scores[exp]['cumulative_results'][step][shot_key] = cumulative_scores[exp_name]['cumulative_results']['2'][shot_key]
             return reordered_cumulative_scores
 
-        local_dir = "/nas/shared/sys2/huangxuhan/eval_log/3B_log_compare/round_5"
+        local_dir = "eval_log/"
         plot_dir = os.path.join(local_dir, "plots")
         if not os.path.exists(local_dir):
             os.makedirs(local_dir)
@@ -343,7 +300,7 @@ if __name__ == "__main__":
         shot_num = 8
         plot_scores(reordered_cumulative_scores, global_steps, range(1, shot_num+1), plot_dir)
 
-        shots_output_dir = os.path.join('/nas/shared/sys2/huangxuhan/eval_log/3B_log_compare/round_5', "shots_comparison/")
+        shots_output_dir = os.path.join('eval_log/3B_log_compare/round_5', "shots_comparison/")
         # print(f"Target steps for shots plot: [2,5,9]")
         # print(f"Available steps: {list(range(step_num))}")
         plot_scores_vs_shots(reordered_cumulative_scores, global_steps, range(1,shot_num+1), shots_output_dir,target_steps=[0,20,40])

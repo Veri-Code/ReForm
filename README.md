@@ -89,6 +89,7 @@ Example dataset:
 
 If you want to train with RL, please first get SFT models ready, checkpoints can be downloaded from https://huggingface.co/Veri-Code/sft_0.5B and please change the `MODEL_PATH` in `train.sh` to your SFT model path.
 
+
 The Python2Dafny Data are prepared in this repository: `dataset/train.parquet` and `dataset/test.parquet`.
 You can directly use them or prepare your own dataset using `src/data_preprocess.py`.
 
@@ -97,6 +98,30 @@ You can directly use them or prepare your own dataset using `src/data_preprocess
 ```bash
 bash train.sh
 ```
+
+#### Multiple Nodes
+```bash
+bash train_multi_node.sh
+```
+
+
+### Evaluation
+You can download our RL-pretrained model at: https://huggingface.co/Veri-Code/14B-RL-entropy
+
+To evaluate the model, change the folder names in the file "src/evaluation.py"
+
+
+```bash
+python src/evaluation.py --workers 96 --folder_name logs/YOUR_LOG_DIR
+```
+
+Then you will get some json files containing the scores
+
+You may use 
+```bash
+python src/plot.py --file_list eval_logs/YOUR_SCORE_JSON_FILES
+```
+to plot the scores
 
 
 <!-- 1. Example DLC environment setup:
