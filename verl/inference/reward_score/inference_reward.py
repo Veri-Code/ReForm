@@ -9,10 +9,10 @@ import hashlib
 import sys
 # sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from verl.utils.reward_score.dafny_oneshot_pure_remove_fulllog import *
+from verl.utils.reward_score.naive_reward import *
 # from verl.utils.reward_score.extraction import *
 from verl.utils.reward_score.condition_comparison_fixed import strip_specs_and_inject_asserts, strip_specs_and_inject_equivalence
-from verl.utils.reward_score.dafny_oneshot_pure_remove_fulllog import *
+from verl.utils.reward_score.naive_reward import *
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from verl.inference.reward_score.spec_coverage import *
 

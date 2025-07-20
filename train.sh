@@ -15,7 +15,7 @@ export HTTPS_PROXY=https://yanchuanhao:EQpLPhbmBNxQWEW5TAKHj9tLlG65mnZLuYrl5ud40
 export no_proxy=localhost,127.0.0.1
 export no_proxy="localhost, 127.0.0.1,*local"
 
-MODEL_PATH="/oss/public/user/xuxu/distilled/ckpt_opt/SKD_RKL-0.5B_14B" # Adjust if you want to use the 7B model or another
+MODEL_PATH="/oss/public/user/yanch/sft_ckpts/sft_0.5B" # Adjust if you want to use the 7B model or another
 TRAIN_FILE="dataset/train.parquet"
 EVAL_FILE="dataset/test.parquet"
 

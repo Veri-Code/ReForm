@@ -6,9 +6,9 @@ import difflib, hashlib, os
 import math
 import time
 
-from verl.utils.reward_score.dafny_oneshot_pure_remove_fulllog import *
-from verl.utils.reward_score.fengdi_reward import execute_diff_location,execute
-from verl.utils.reward_score.fengdi_reward import *
+from verl.utils.reward_score.naive_reward import *
+from verl.utils.reward_score.subset_reward import execute_diff_location,execute
+from verl.utils.reward_score.subset_reward import *
 from verl.utils.reward_score.condition_comparison_fixed import *
 from verl.inference.reward_score.spec_coverage import analyze_spec_coverage
 

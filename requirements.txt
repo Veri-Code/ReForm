@@ -22,3 +22,6 @@ uvicorn
 fastapi
 latex2sympy2_extended
 math_verify
+pathos
+vllm==0.8.3
+modelscope

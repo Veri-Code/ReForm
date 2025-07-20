@@ -17,8 +17,7 @@ Note that we don't combine the main with ray_trainer as ray_trainer is used by o
 from verl.trainer.ppo.ray_trainer import RayPPOTrainer
 from verl import DataProto
 import torch
-from verl.utils.reward_score import dafny_oneshot, dafny_oneshot_pure_remove, dafny_oneshot_pure_remove_fulllog
-from verl.utils.reward_score import fengdi_reward, formal_cot_oneshot_pure_remove
+from verl.utils.reward_score import naive_reward, subset_reward, formal_cot_oneshot_pure_remove
 import os
 import time
 from pathos.multiprocessing import ProcessingPool as Pool
@@ -33,7 +32,7 @@ def compute_score(input_tuple):
     score = score_version[0]
     refine_score = score_version[1]
     if reward_type == "spec":
-        score = fengdi_reward.compute_score(
+        score = subset_reward.compute_score(
             solution_str=sequences_str, 
             ground_truth=ground_truth, 
             index=idx, 
@@ -43,7 +42,7 @@ def compute_score(input_tuple):
             version=reward_version,
             )
     elif reward_type == "intermediate":
-        score = fengdi_reward.compute_intermediate_score(
+        score = subset_reward.compute_intermediate_score(
             solution_str=sequences_str, 
             ground_truth=ground_truth, 
             index=idx, 
@@ -71,7 +70,7 @@ def compute_score(input_tuple):
             version=reward_version,
             )
     else:
-        score = dafny_oneshot_pure_remove_fulllog.compute_score(
+        score = naive_reward.compute_score(
             solution_str=sequences_str, 
             ground_truth=ground_truth, 
             index=idx, 

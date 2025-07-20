@@ -23,7 +23,7 @@ from verl.inference.reward_score.inference_reward import compute_subset_score
 from verl.inference.model_utils.models import QwenModel
 from verl.inference.model_utils.llm_inference import LLMInference
 from verl.inference.model_utils.SampleItems import SampleItem, SampleItemList
-from verl.utils.reward_score.dafny_oneshot_pure_remove_fulllog import *
+from verl.utils.reward_score.naive_reward import *
 
 class bcolors:
     HEADER = '\033[95m'

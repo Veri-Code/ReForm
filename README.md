@@ -2,28 +2,33 @@
 
 Specification Generation Framework for Language Models using SFT (Supervised Fine-Tuning) and RL (Reinforcement Learning) approaches.
 
+
+This repository build on top of [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) and [Verl](https://github.com/volcengine/verl).
+
 ## Table of Contents
 - [Installation](#installation)
 - [Supervised Fine-Tuning (SFT)](#supervised-fine-tuning-sft)
 - [Reinforcement Learning (RL)](#reinforcement-learning-rl)
 
 ## Installation
-[Installation instructions to be added]
-conda create -n vericode python=3.10
 
+```bash
+conda create -n vericode python=3.10
+conda activate vericode
 pip install torch==2.6.0
 wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1+cu12torch2.6cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 pip install flash_attn-2.7.4.post1+cu12torch2.6cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 pip install -r requirements.txt
-pip install pathos
-pip install vllm==0.8.3
-pip install modelscope
+```
 
+## Download Data and Model
+
+You can download the data and model from https://huggingface.co/Veri-Code.
 
 
 ## Supervised Fine-Tuning (SFT)
 
-### Checkpoints
+<!-- ### Checkpoints
 Provide SFT checkpoints directly now
 
 put these checkpoints in the directory: (ckpt)
@@ -62,10 +67,10 @@ register_template(
 Example dataset:
 ```bash
 /nas/shared/sys2/chefengdi/dafny_data/opt_3419_vanilla_lemma_kept_remove_assume_change_train_formalcot_remove_parseerror_250516.json
-```
+``` -->
 
 ### Training
-For SFT training, please contact xuxu for assistance.
+<!-- For SFT training, please contact xuxu for assistance.
 
 ### Inference
 1. Example inference script:
@@ -76,20 +81,25 @@ For SFT training, please contact xuxu for assistance.
 2. Place your inference dataset in:
 ```bash
 /nas/shared/sys2/liyizhi/LLaMA-Factory/data/dataset_info.json
-```
+``` -->
 
 ## Reinforcement Learning (RL)
 
 ### Training
 
+If you want to train with RL, please first get SFT models ready, checkpoints can be downloaded from https://huggingface.co/Veri-Code/sft_0.5B and please change the `MODEL_PATH` in `train.sh` to your SFT model path.
 
+The Python2Dafny Data are prepared in this repository: `dataset/train.parquet` and `dataset/test.parquet`.
+You can directly use them or prepare your own dataset using `src/data_preprocess.py`.
 
 #### Single Node
+
+```bash
 bash train.sh
+```
 
 
-
-1. Example DLC environment setup:
+<!-- 1. Example DLC environment setup:
 ```bash
 /nas/shared/sys2/liyizhi/test_tinyzero3/examples/grpo_trainer/grpo_8nodes_2kins1_3B_cot_with_format.sh
 ```
@@ -142,4 +152,4 @@ The process involves:
 Generate plots using:
 ```bash
 /nas/shared/sys2/liyizhi/test_tinyzero3/verl/inference/plot.py
-```
+``` -->

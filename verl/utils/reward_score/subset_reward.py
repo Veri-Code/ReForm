@@ -9,7 +9,7 @@ import hashlib
 import sys
 # sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from verl.utils.reward_score.dafny_oneshot_pure_remove_fulllog import *
+from verl.utils.reward_score.naive_reward import *
 from verl.utils.reward_score.condition_comparison_fixed import *
 from verl.inference.reward_score.inference_reward import reinsert_gt_spec
 from verl.inference.reward_score.spec_coverage import analyze_spec_coverage
