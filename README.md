@@ -52,6 +52,13 @@ To train using reinforcement learning (RL), you must first obtain a supervised f
 
 The dataset used for training and evaluation is Python2Dafny by default.
 
+### Hyperparameters 
+- reward_model.score_version:[0.4,0.4] for Subset reward, [0.8, 0.0] for naive reward
+- actor_rollout_ref.actor.use_kl_loss=True and actor_rollout_ref.actor.kl_loss_coef=0.01 for KL loss, False and 0.0 for no KL loss
+- actor_rollout_ref.actor.entropy_coeff=0.01 for entropy loss, 0.0 for no entropy loss
+
+
+
 ### Single-node training
 
 ```bash
