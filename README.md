@@ -5,7 +5,6 @@ Specification Generation Framework for Language Models using SFT (Supervised Fin
 
 This repository build on top of [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) and [Verl](https://github.com/volcengine/verl).
 
-You can find our homepage
 
 ## Table of Contents
 - [Installation](#installation)
