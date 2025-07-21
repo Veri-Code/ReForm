@@ -43,7 +43,13 @@ Available checkpoints:
 
 - RL fine-tuned model: 14B-RL-entropy
 
-You can also prepare your own dataset using `src/data_preprocess.py`.
+Available datasets:
+
+- Python2Dafny: 18k
+
+- DafnyComp: 300
+
+These dataset are in json format, which you can use `src/data_preprocess.py` to obtain parquet files for training.
 
 
 ## Training
