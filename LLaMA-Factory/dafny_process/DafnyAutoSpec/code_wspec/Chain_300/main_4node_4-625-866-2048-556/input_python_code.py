@@ -1,0 +1,84 @@
+from itertools import count
+
+
+def smallestFactorization_625(num: int) -> int:
+    # input: 1 <= num <= 2147483648
+    # output: 1 <= <output> <= 100000000
+    if num < 2:
+        return num
+    (ans, mul) = (0, 1)
+    for i in range(9, 1, -1):
+        while num % i == 0:
+            num //= i
+            ans = mul * i + ans
+            mul *= 10
+    return ans if num < 2 and ans <= 2**31 - 1 else 0
+
+
+def primePalindrome_866(n: int) -> int:
+    # input: 1 <= n <= 100000000
+    # output: 0 <= <output> <= 1000000
+
+    def is_prime(x):
+        if x < 2:
+            return False
+        v = 2
+        while v * v <= x:
+            if x % v == 0:
+                return False
+            v += 1
+        return True
+
+    def reverse(x):
+        res = 0
+        while x:
+            res = res * 10 + x % 10
+            x //= 10
+        return res
+
+    while 1:
+        if reverse(n) == n and is_prime(n):
+            return n
+        if 10**7 < n < 10**8:
+            n = 10**8
+        n += 1
+
+
+def nextBeautifulNumber_2048(n: int) -> int:
+    # input: 0 <= n <= 1000000
+    # output: 1 <= <output> <= 2147483648
+    for x in count(n + 1):
+        y = x
+        cnt = [0] * 10
+        while y:
+            (y, v) = divmod(y, 10)
+            cnt[v] += 1
+        if all((v == 0 or i == v for (i, v) in enumerate(cnt))):
+            return x
+
+
+def nextGreaterElement_556(n: int) -> int:
+    # input: 1 <= n <= 2147483648
+    # output: unconstrained
+    cs = list(str(n))
+    n = len(cs)
+    (i, j) = (n - 2, n - 1)
+    while i >= 0 and cs[i] >= cs[i + 1]:
+        i -= 1
+    if i < 0:
+        return -1
+    while cs[i] >= cs[j]:
+        j -= 1
+    (cs[i], cs[j]) = (cs[j], cs[i])
+    cs[i + 1 :] = cs[i + 1 :][::-1]
+    ans = int("".join(cs))
+    return -1 if ans > 2**31 - 1 else ans
+
+
+def main_4node_4(o: object) -> object:
+    """4 nodes, single chain"""
+    o1: object = smallestFactorization_625(o)
+    o2: object = primePalindrome_866(o1)
+    o3: object = nextBeautifulNumber_2048(o2)
+    o4: object = nextGreaterElement_556(o3)
+    return o4
