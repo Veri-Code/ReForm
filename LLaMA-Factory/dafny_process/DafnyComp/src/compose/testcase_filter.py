@@ -314,7 +314,7 @@ class PythonExecutor:
     """Execute Python code and get actual output"""
     
     def __init__(self):
-        self.error_dir = "/nas/shared/sys2/liyizhi/dafny_process/DafnyAutoSpec/error/no_testcases_v2"
+        self.error_dir = "../../logs/no_testcases"
         os.makedirs(self.error_dir, exist_ok=True)
     
     def execute_python_file(self, py_file: str, input_value: Any, entry_func: str) -> Tuple[bool, Any]:

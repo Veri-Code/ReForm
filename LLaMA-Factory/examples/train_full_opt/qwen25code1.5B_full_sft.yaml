@@ -1,5 +1,5 @@
 ### model
-model_name_or_path: /cpfs04/user/liyizhi/models/Qwen2.5-Coder-1.5B
+model_name_or_path: Qwen2.5-Coder-1.5B
 trust_remote_code: true
 
 ### method
