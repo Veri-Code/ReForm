@@ -91,7 +91,7 @@ def coverting_file(python_files, args):
                 use_multistep=args.use_multistep
             )
             
-            # 检查是否有通过验证的 Dafny 代码，并保存为 dafny_code_final.dfy
+            # Check if there is verified Dafny code, and save as dafny_code_final.dfy
             from python2dafny_ori import check_translate_success
             success, _, dafny_code = check_translate_success(file_output_dir)
             if success and dafny_code is not None:
@@ -100,7 +100,7 @@ def coverting_file(python_files, args):
                     f.write(dafny_code)
                 print(f"  ✓ Verified Dafny code saved as dafny_code_final.dfy in {file_output_dir}")
             else:
-                # 没有通过验证，删除该文件夹
+                # If not verified, remove the folder
                 print(f"  ✗ No verified Dafny code, removing folder: {file_output_dir}")
                 shutil.rmtree(file_output_dir)
                 failed_conversions += 1
@@ -147,7 +147,7 @@ def convert_files(args):
     
     print(f"Found {len(python_files)} Python files to convert")
     
-    # 多进程批量处理
+    # Batch processing with multiprocessing
     num_processes = min(20, len(python_files))
     batches = []
     batch_size = (len(python_files) + num_processes - 1) // num_processes
@@ -157,7 +157,7 @@ def convert_files(args):
     with mp.Pool(processes=num_processes) as pool:
         pool.starmap(coverting_file, batches)
     
-    # 处理完后统一筛选和整理
+    # Post-processing: filter and organize
     print("\nPost-processing: filtering only successful Dafny code folders...")
     from python2dafny_ori import check_translate_success
     success_folders = []
@@ -172,7 +172,7 @@ def convert_files(args):
                 success_folders.append(file_output_dir)
             else:
                 shutil.rmtree(file_output_dir)
-    # 只保留前50个成功文件夹的“副本”到新目录
+    # Only keep copies of the first 50 successful folders in a new directory
     selected_dir = args.output_dir + "_selected_50"
     if not os.path.exists(selected_dir):
         os.makedirs(selected_dir)

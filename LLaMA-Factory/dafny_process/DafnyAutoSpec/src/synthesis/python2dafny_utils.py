@@ -467,9 +467,9 @@ def check_translate_result(translate_result_dir):
 
 class APIManager:
     def __init__(self):
-        key = "sk-3msfa4X7ilHGIde0PGJW1XxcYiGHrYGT6vmVdhERiDv92jEs"
+        key = "your api key"
         self.client = OpenAI(
-            base_url="http://35.220.164.252:3888/v1", api_key=key)
+            base_url="your api platform", api_key=key)
 
     def call_llm(self, messages, model):
         response = self.client.chat.completions.create(
