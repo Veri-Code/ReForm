@@ -35,6 +35,7 @@ import argparse
 
 parse_args = argparse.ArgumentParser()
 parse_args.add_argument("--file_list", type=str, nargs='+', help="file list")
+parse_args.add_argument("--training_length", type=int, default=20, help="training length")
 file_list_all = parse_args.parse_args().file_list
 
 
@@ -140,15 +141,22 @@ for i in range(3):
         output.append(step_means)
     full_output.append(output)
 
-
+metric_names = [
+    "Validation Rate",
+    "Verification Rate",
+    "Spec Superiority Rate"
+]
+num_models = len(file_list_all)
 for i in range(3):
     for j in range(len(file_list_all)):
         # diff = full_output[i][j][0] - full_output[i][2][0]
         # full_output[i][j] = [x - diff for x in full_output[i][j]]
 
-        print(max(full_output[i][j]))
+        name = metric_names[i]
+        score = max(full_output[i][j])
+        print(f"{name} for model {j}: {score}")
 
-exit()
+# exit()
 deepmind_colors = [
     "#1A1A1A",  
     "#0072B2",  
@@ -159,21 +167,22 @@ deepmind_colors = [
     "#56B4E9",  
 ]
 
-metric_names = [
-    "Validation Rate",
-    "Verification Rate",
-    "Spec Superiority Rate"
-]
+# metric_names = [
+#     "Validation Rate",
+#     "Verification Rate",
+#     "Spec Superiority Rate"
+# ]
 
-labels = ["verification", "subset", "subset+KL+entropy"]
+# labels = ["verification", "subset", "subset+KL+entropy"]
+labels = [f"model {j}" for j in range(num_models)]
 
 markers = ['o', 's', '^', 'v', 'D', 'p', '*', 'x', '+', 'h']
-training_length = 81
+training_length = args.training_length
 x = range(0, training_length * 2, 2)
 fig, axes = plt.subplots(1, 3, figsize=(12, 4))
 for i in range(3):
     ax = axes[i]
-    for j in range(3):
+    for j in range(num_models):
         ax.plot(x, full_output[i][j][:training_length], label=labels[j], marker=markers[j], markersize=3, markevery=5, color=deepmind_colors[j+1])
     ax.set_xlabel("Training Steps")
     ax.set_ylabel(metric_names[i])

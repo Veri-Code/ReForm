@@ -8,7 +8,7 @@ from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 
-from verl.utils.reward_score.dafny_oneshot_pure_remove_fulllog import *
+from verl.utils.reward_score.naive_reward import *
 from verl.inference.reward_score.spec_coverage import *
 from verl.utils.reward_score.condition_comparison_fixed import strip_specs_and_inject_asserts
 from verl.inference.reward_score.inference_reward import compute_score_with_log, execute_diff_location, compute_subset_score

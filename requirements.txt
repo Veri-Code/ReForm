@@ -25,3 +25,5 @@ math_verify
 pathos
 vllm==0.8.3
 modelscope
+matplotlib
+seaborn

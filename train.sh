@@ -3,8 +3,8 @@ exp_name='Test'
 WORLDSIZE=1
 GPUS_PER_NODE=8 
 BoN=8
-BATCH_SIZE=128  
-PPO_MINI_BATCH_SIZE=16  
+BATCH_SIZE=1024  
+PPO_MINI_BATCH_SIZE=128  
 TENSOR_MODEL_PARALLEL_SIZE=1
 
 MODEL_PATH="sft_ckpts/sft_0.5B" # Adjust if you want to use the 7B model or another
@@ -51,7 +51,7 @@ python3 -m verl.trainer.main_ppo \
     trainer.val_before_train=True \
     trainer.n_gpus_per_node=${GPUS_PER_NODE} \
     trainer.nnodes=${WORLDSIZE} \
-    trainer.save_freq=1 \
-    trainer.test_freq=1 \
+    trainer.save_freq=20 \
+    trainer.test_freq=2 \
     trainer.default_local_dir=rl_checkpoints/${exp_name} \
-    trainer.total_epochs=1 | tee ${exp_name}.log
+    trainer.total_epochs=40 | tee ${exp_name}.log

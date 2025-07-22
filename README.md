@@ -2,9 +2,6 @@
 
 A framework for code to specification generation using large language models, based on Supervised Fine-Tuning (SFT) and Reinforcement Learning (RL).([Homepage](https://bruno686.github.io/ReForm/))
 
-## ToDo
-- [ ] Add SFT dataset, training and evaluation scripts
-- [ ] Add DafnyComp benchmark and evaluation codes for it
 
 
 ![Overall Pipeline](assets/pipeline.png)
@@ -14,6 +11,7 @@ A framework for code to specification generation using large language models, ba
 - [Dataset and Model](#dataset-and-model)
 - [Training](#training)
 - [Evaluation](#evaluation)
+- [SFT Training](#sft-training)
 - [Reference](#reference)
 
 ## Installation
@@ -49,7 +47,12 @@ Available datasets:
 
 - DafnyComp: 300
 
-These dataset are in json format, which you can use `src/data_preprocess.py` to obtain parquet files for training.
+These dataset are in json format.
+If you want to use the whole 18k data or your own json data for training, you can use 
+```bash
+python -m src.data_preprocess
+```
+to transform these json format data to parquet files for training.
 
 
 ## Training
@@ -59,7 +62,7 @@ To train using reinforcement learning (RL), you must first obtain a supervised f
 The dataset used for training and evaluation is Python2Dafny by default.
 
 ### Hyperparameters 
-- reward_model.score_version:[0.4,0.4] for Subset reward, [0.8, 0.0] for naive reward
+- reward_model.score_version: [0.4,0.4] for Subset reward, [0.8, 0.0] for naive reward
 - actor_rollout_ref.actor.use_kl_loss=True and actor_rollout_ref.actor.kl_loss_coef=0.01 for KL loss, False and 0.0 for no KL loss
 - actor_rollout_ref.actor.entropy_coeff=0.01 for entropy loss, 0.0 for no entropy loss
 
@@ -87,7 +90,7 @@ bash train_multi_node.sh
 
 To evaluate the model, please input the log directory of the model you want to evaluate. The default folder name for the log directory is `logs` if you use the default training script.
 ```bash
-python src/evaluation.py --workers 96 --folder_name logs/YOUR_LOG_DIR
+python -m src.evaluation --workers 96 --folder_name logs/YOUR_LOG_DIR
 ```
 
 Evaluation logs (in JSON format) will be saved to the `eval_logs` folder by default.
@@ -95,9 +98,14 @@ Evaluation logs (in JSON format) will be saved to the `eval_logs` folder by defa
 To visualize results:
 
 ```bash
-python src/plot.py --file_list eval_logs/YOUR_SCORE_JSON_FILES
+python src.plot --file_list eval_logs/YOUR_SCORE_JSON_FILES --training_length TRAINING_LENGTH
 ```
 
+Here, `TRAINING_LENGTH` can be the number of validation times (number of dafny files in your log) minus 1.
+
+
+## SFT Training
+If you want to train the SFT model by yourself, please refer to `LLaMA-Factory/README.md` for details.
 
 ## Reference
 This repository build on top of [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) and [Verl](https://github.com/volcengine/verl). 
