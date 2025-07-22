@@ -24,3 +24,15 @@ numpy<2.0.0
 av
 librosa
 tyro<0.9.0
+radon==6.0.1
+autopep8
+flake8
+astor
+tqdm
+colorama
+urllib3==1.25.11
+openai==1.7.0
+boto3==1.37.2
+smart-open==7.0.4
+xxhash==3.5.0
+rich
