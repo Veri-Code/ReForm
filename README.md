@@ -1,3 +1,6 @@
+[![Paper](https://arxiv.org/abs/2507.16331)](<paper_link>)
+[![Project Page](https://veri-code.github.io/ReForm-page/)](<project_page_link>)
+
 # Veri-Code
 
 A framework for code to specification generation using large language models, based on Supervised Fine-Tuning (SFT) and Reinforcement Learning (RL).([Homepage](https://bruno686.github.io/ReForm/))
@@ -111,3 +114,19 @@ If you want to train the SFT model by yourself, please refer to `LLaMA-Factory/R
 This repository build on top of [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) and [Verl](https://github.com/volcengine/verl). 
 
 The `verl/` directory is primarily copied from the Verl repository. We made modifications in the directory `verl/trainer/` and `verl/utils/reward_score/`.
+
+## Citation
+
+If you use this work in your research, please cite:
+
+```bibtex
+@misc{yan2025reformreducinghuman,
+      title={Re:Form -- Reducing Human Priors in Scalable Formal Software Verification with RL in LLMs: A Preliminary Study on Dafny}, 
+      author={Chuanhao Yan and Fengdi Che and Xuhan Huang and Xu Xu and Xin Li and Yizhi Li and Xingwei Qu and Jingzhe Shi and Zhuangzhuang He and Chenghua Lin and Yaodong Yang and Binhang Yuan and Hang Zhao and Yu Qiao and Bowen Zhou and Jie Fu},
+      year={2025},
+      eprint={2507.16331},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2507.16331}, 
+}
+```
