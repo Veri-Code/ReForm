@@ -1,7 +1,9 @@
-[![Paper](https://arxiv.org/abs/2507.16331)](<paper_link>)
-[![Project Page](https://veri-code.github.io/ReForm-page/)](<project_page_link>)
+
 
 # Veri-Code
+[🌐 Project Page](https://veri-code.github.io/ReForm-page) | [📄 arXiv Paper](https://arxiv.org/abs/2507.16331)
+
+
 
 A framework for code to specification generation using large language models, based on Supervised Fine-Tuning (SFT) and Reinforcement Learning (RL).
 
