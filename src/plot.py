@@ -112,30 +112,20 @@ for i in range(3):
         # Extract means and stds for this score component
         step_means = []
         
-        scores_list = []
-        for j in range(dataset_len):
-            temp_scores = [cumulative_results[step][1][j][i] for step in global_steps]
-            temp_scores = temp_scores[:1]
-            max_score = np.max(temp_scores)
-            scores_list.append(max_score)
-        mean_score = np.mean(scores_list)
-        step_means.append(mean_score)
 
-        # for step in global_steps:
-        #     shot_keys = list(cumulative_results[step].keys())
-        #     shot_keys = [int(shot_key) for shot_key in shot_keys]
+
+        for step in global_steps:
+            shot_keys = list(cumulative_results[step].keys())
+            shot_keys = [int(shot_key) for shot_key in shot_keys]
 
 
             
 
-        #     if True:
-        #         # scores = cumulative_results[step][str(shot)]
-        #         # print(len(cumulative_results[step]))
-        #         scores = cumulative_results[step][1]
-        #         scores = np.array(scores)
-        #         scores = np.where(scores == -1, 0, scores)
-        #         mean_score = np.mean(scores[:, i])
-        #         step_means.append(mean_score)
+            scores = cumulative_results[step][1]
+            scores = np.array(scores)
+            scores = np.where(scores == -1, 0, scores)
+            mean_score = np.mean(scores[:, i])
+            step_means.append(mean_score)
 
         
         output.append(step_means)
@@ -177,7 +167,7 @@ deepmind_colors = [
 labels = [f"model {j}" for j in range(num_models)]
 
 markers = ['o', 's', '^', 'v', 'D', 'p', '*', 'x', '+', 'h']
-training_length = args.training_length
+training_length = parse_args.parse_args().training_length
 x = range(0, training_length * 2, 2)
 fig, axes = plt.subplots(1, 3, figsize=(12, 4))
 for i in range(3):
