@@ -88,18 +88,12 @@ class EvalRunner:
             return row
 
         # Process parquet file and run inference
-        input_file = "/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_not_trained_sft/test.parquet"
-
-        output_file = os.path.join('/nas/shared/sys2/chefengdi/dafny_full_log/', "sft_test.parquet")
-
-        # Generate output file path if not provided
-        if output_file is None:
-            basename = os.path.basename(input_file)
-            if output_dir:
-                output_file = os.path.join(output_dir, f"{self.prompt_type}_{basename}")
-            else:
-                dirname = os.path.dirname(input_file)
-                output_file = os.path.join(dirname, f"{self.prompt_type}_{basename}")
+        input_file = config.data.get(
+            "path",
+            os.environ.get("REFORM_RANDOM_TEST_INPUT", "dataset/dataset5k_not_trained_sft/test.parquet"),
+        )
+        output_dir = config.trainer.get("output_dir", os.environ.get("REFORM_EVAL_LOG_DIR", "eval_logs/inference"))
+        output_file = os.path.join(output_dir, "sft_test.parquet")
         
         # Copy to local if needed
         local_input = input_file

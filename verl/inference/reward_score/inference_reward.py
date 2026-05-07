@@ -85,10 +85,10 @@ def execute(cmd, ext, v, timeout_sec=10, index=-1, exp_name="exp", output_dir=No
     runcmd = "timeout --kill-after=5 %s %s %s >%s 2>%s" % (str(timeout_sec), cmd, fn, outfn, errfn)
     # if use_sandbox:
     #     if docker_sandbox:
-    #         runcmd = 'docker run --rm --platform linux/amd64 -v "$(pwd):/app" namin/llm-verified ' + runcmd.replace(fn, "/app/"+fn)
+    #         runcmd = os.environ.get("VERICODE_DOCKER_SANDBOX_CMD", "") + " " + runcmd
     #     else:
-    #         pre_llm_command = "singularity exec --no-mount=/n --no-mount=/net --no-mount=/scratch --no-mount=/cvmfs ~/singularity/llm-verified_latest.sif"
-    #         runcmd = "SINGULARITY_HOME=/ timeout 10 %s %s %s >%s 2>%s" % (pre_llm_command, cmd, fn, outfn, errfn)
+    #         pre_llm_command = os.environ.get("VERICODE_PRE_LLM_COMMAND", "")
+    #         runcmd = "%s timeout 10 %s %s %s >%s 2>%s" % (pre_llm_command, cmd, fn, outfn, errfn)
 
     #print("RUN CMD:", runcmd)
     status = os.system(runcmd)
@@ -588,7 +588,7 @@ def compute_subset_score(solution_str,
     #     scores[8] = 0
 
     try:
-        merge_code_dir = "/nas/shared/sys2/liyizhi/folder-0630/sft_all_merge_128"
+        merge_code_dir = os.environ.get("REFORM_MERGE_CODE_DIR", "eval_logs/sft_all_merge_128")
         merge_code = os.path.join(merge_code_dir, f"{index}.dfy")
         with open(merge_code, "r") as f:
             merge_code = f.read()
@@ -764,4 +764,3 @@ def reinsert_gt_spec_structured(gt_code, llm_code):
     
     return result_code
 """
-

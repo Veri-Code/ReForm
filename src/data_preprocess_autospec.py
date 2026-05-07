@@ -76,14 +76,19 @@ def make_prefix(dp):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--local_dir', default='dataset3')
+    parser.add_argument(
+        '--train_json',
+        default=os.environ.get('REFORM_AUTOSPEC_JSON'),
+        help='Path to a DafnyAutoSpec JSON file. Can also be set with REFORM_AUTOSPEC_JSON.',
+    )
     args = parser.parse_args()
     
     # raw_dataset = load_dataset("Veri-Code/ReForm-Python2Dafny-Dataset")["train"]
 
-    # if use JSON style input, use the following codes
-    train_json = "/mnt/workspace/liyizhi/dafny_process/DafnyAutoSpec/eval/dfyautospec_chain300_partial.json"
-    train_json = "/mnt/workspace/liyizhi/dafny_process/DafnyAutoSpec/code_wspec/dfyautospec.json"
-    with open(train_json, 'r') as f:
+    if not args.train_json:
+        raise ValueError('Please provide --train_json or set REFORM_AUTOSPEC_JSON.')
+
+    with open(args.train_json, 'r') as f:
         train_dataset = json.load(f)
     raw_dataset = Dataset.from_list(train_dataset)
 
@@ -132,4 +137,3 @@ if __name__ == '__main__':
 
     train_dataset.to_parquet(os.path.join(local_dir, 'train.parquet'))
     test_dataset.to_parquet(os.path.join(local_dir, 'test.parquet'))
-

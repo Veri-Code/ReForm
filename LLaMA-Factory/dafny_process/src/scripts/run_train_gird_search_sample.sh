@@ -3,12 +3,11 @@
 # Conda Env Activation
 
 # Custom
-export WANDB_API_KEY=xxxx
-export WANDB_PROJECT=xxxx
+export WANDB_PROJECT="${WANDB_PROJECT:-reform}"
 
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
-cd Path to LLaMA-Factory
+cd "${LLAMA_FACTORY_DIR:-.}"
 
 model_sizes=("0.5" "1.5" "3" "7" "14" "32")
 training_datasets=("dataset1 name in data/datset_info.json" "dataset2 name in data/datset_info.json")  # TODO: Replace with your actual dataset names

@@ -14,10 +14,12 @@ A framework for code to specification generation using large language models, ba
 ## Table of Contents
 - [Installation](#installation)
 - [Dataset and Model](#dataset-and-model)
+- [Quick Reproduction](#quick-reproduction)
 - [Training](#training)
 - [Evaluation](#evaluation)
 - [SFT Training](#sft-training)
 - [Reference](#reference)
+- [License](#license)
 
 ## Installation
 We recommend using conda for environment setup:
@@ -58,6 +60,65 @@ If you want to use the whole 18k data or your own json data for training, you ca
 python -m src.data_preprocess
 ```
 to transform these json format data to parquet files for training.
+
+## Quick Reproduction
+The repository now supports a minimal reproduction path that uses the released Hugging Face assets and the default smoke checkpoint. The shortest path is:
+
+1. set up the `vericode` environment
+2. download the released datasets and the `ReForm-SFT-0.5B` checkpoint
+3. preprocess the Python2Dafny JSON into `dataset/train.parquet` and `dataset/test.parquet`
+4. run the GPU smoke job or the full training script
+
+### 1. Download released assets
+
+```bash
+conda activate vericode
+
+python -c "from huggingface_hub import snapshot_download; snapshot_download('Veri-Code/ReForm-Python2Dafny-Dataset', repo_type='dataset', local_dir='hf_assets/datasets/ReForm-Python2Dafny-Dataset'); snapshot_download('Veri-Code/ReForm-DafnyComp-Benchmark', repo_type='dataset', local_dir='hf_assets/datasets/ReForm-DafnyComp-Benchmark'); snapshot_download('Veri-Code/ReForm-SFT-0.5B', local_dir='sft_ckpts/sft_0.5B')"
+```
+
+If you already have the JSON under `hf_assets/datasets/ReForm-Python2Dafny-Dataset/python2dafny_18k.json`, `src/data_preprocess.py` will use it directly.
+
+### 2. Build the parquet files
+
+```bash
+python -m src.data_preprocess \
+  --dataset_path hf_assets/datasets/ReForm-Python2Dafny-Dataset/python2dafny_18k.json \
+  --local_dir dataset
+```
+
+This creates the default files expected by `train.sh`:
+
+- `dataset/train.parquet`
+- `dataset/test.parquet`
+
+### 3. Run a smoke check
+
+If you have a local GPU, add the bundled Dafny binary to `PATH` and run the smoke script:
+
+```bash
+export PATH="$PWD/hf_assets/tools/dafny-4.11.0/dafny:$PATH"
+export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+python scripts/repro_gpu_smoke.py \
+  --model_path sft_ckpts/sft_0.5B \
+  --parquet dataset/test.parquet
+```
+
+The smoke job checks that the checkpoint loads, Dafny runs, and `verl.trainer.main_ppo` can finish a one-sample validation pass on the downloaded assets.
+The SiFlow YAML creates its one-row smoke parquet files from `dataset/train.parquet` and `dataset/test.parquet` automatically.
+
+### 4. Run the full training script
+
+After the smoke check, launch the default RL script:
+
+```bash
+MODEL_PATH=sft_ckpts/sft_0.5B \
+TRAIN_FILE=dataset/train.parquet \
+EVAL_FILE=dataset/test.parquet \
+bash train.sh
+```
+
+For multi-node training, use `bash train_multi_node.sh` instead.
 
 
 ## Training
@@ -132,3 +193,29 @@ If you use this work in your research, please cite:
       url={https://arxiv.org/abs/2507.16331}, 
 }
 ```
+
+## License
+
+The Re:Form-specific code and documentation in this repository are released under the MIT License. Third-party components keep their original licenses; in particular, `LLaMA-Factory/` and the copied `verl/` code include Apache-2.0 notices.
+
+### MIT License
+
+Copyright (c) 2025 Veri-Code authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

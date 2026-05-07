@@ -88,7 +88,7 @@ def get_trajectory_tracker():
 if __name__ == '__main__':
     # testing
     os.environ['VERL_ENABLE_TRACKER'] = '1'
-    os.environ['VERL_TRACKER_HDFS_DIR'] = '~/debug/test'
+    os.environ['VERL_TRACKER_HDFS_DIR'] = 'debug/test'
 
     @ray.remote
     def process(iter):

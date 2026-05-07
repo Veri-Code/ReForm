@@ -17,6 +17,18 @@ import torch.multiprocessing as mp
 import torch
 import itertools
 import logging
+import argparse
+import json
+
+DEFAULT_CKPT_ROOT = os.environ.get("REFORM_CKPT_ROOT", "rl_checkpoints")
+DEFAULT_EVAL_LOG_DIR = os.environ.get("REFORM_EVAL_LOG_DIR", "eval_logs/inference")
+DEFAULT_SFT_MODEL_PATHS = {
+    "0.5B": os.environ.get("REFORM_SFT_0_5B_PATH", "sft_ckpts/distilled/ckpt_opt/SKD_RKL-0.5B_14B"),
+    "1.5B": os.environ.get("REFORM_SFT_1_5B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-1.5B_5k_sft_opt"),
+    "3B": os.environ.get("REFORM_SFT_3B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-3B_5k_sft_opt"),
+    "7B": os.environ.get("REFORM_SFT_7B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-7B_5k_sft_opt"),
+    "14B": os.environ.get("REFORM_SFT_14B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-14B_5k_sft_opt"),
+}
 
 
 def setup_logging(log_dir, log_filename='plot.log'):
@@ -67,7 +79,7 @@ def parse_args():
     parser.add_argument('--config', type=str, help='Path to config file (yaml or json)')
     
     # Direct arguments that can override config file
-    parser.add_argument('--base_path', type=str, default="/oss/public/user/chefengdi/ckpts",
+    parser.add_argument('--base_path', type=str, default=DEFAULT_CKPT_ROOT,
                       help='Base path to model checkpoints')
     parser.add_argument('--exp_names', nargs='+', help='List of experiment names to compare')
     parser.add_argument('--global_steps', nargs='+', type=int, default=[20, 40, 100],
@@ -91,17 +103,10 @@ def load_config(config_path: str) -> dict:
         raise ValueError("Config file must be either yaml or json")
 
 def get_model_path(exp_name: str):
-    if '0.5B' in exp_name:
-        model_path = "/oss/public/user/xuxu/distilled/ckpt_opt/SKD_RKL-0.5B_14B"
-    elif '3B' in exp_name:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-3B_5k_sft_opt"
-    elif '7B' in exp_name:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-7B_5k_sft_opt"
-    elif '14B' in exp_name:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-14B_5k_sft_opt"
-    else:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-3B_5k_sft_opt"
-    return model_path
+    for model_size, model_path in DEFAULT_SFT_MODEL_PATHS.items():
+        if model_size in exp_name:
+            return model_path
+    return DEFAULT_SFT_MODEL_PATHS["3B"]
 
 def create_eval_tasks(base_paths: List[str], exp_names: List[str], global_steps: List[int], max_shot: int, base_config: DictConfig):
     """Create evaluation tasks for all experiments and steps."""
@@ -149,7 +154,7 @@ def run_single_eval(task_with_gpu):
         step_name = os.path.basename(os.path.dirname(model_path))
         
         # Get base log directory and update output directory
-        log_dir = config.trainer.get('output_dir', "/nas/shared/sys2/chefengdi/dafny_full_log/")
+        log_dir = config.trainer.get('output_dir', DEFAULT_EVAL_LOG_DIR)
         num_cpu = config.data.get('num_cpu', 1)
         config.trainer.output_dir = os.path.join(log_dir, f"{exp_name}", f"{step_name}")
         
@@ -737,7 +742,7 @@ def main(cfg: DictConfig) -> None:
     
     # Extract plot-specific configuration
     plot_cfg = cfg.get('plot', {})
-    base_paths = plot_cfg.get('base_paths', ["/oss/public/user/chefengdi/ckpts"])
+    base_paths = plot_cfg.get('base_paths', [DEFAULT_CKPT_ROOT])
     exp_names = plot_cfg.get('exp_names', [
         "grpo_8nodes_5ksft_3B_spec_refine_one_score-ensures_fixed"
     ])

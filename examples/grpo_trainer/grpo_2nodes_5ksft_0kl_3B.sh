@@ -8,8 +8,7 @@ export NCCL_SOCKET_IFNAME=en,eth,em,bond
 export NCCL_DEBUG=INFO
 
 project_name='Test'
-exp_name='DLC_2nodes_5ksft_0kl_3B'
-export WANDB_API_KEY=2ca4169be643483a1a1694f52e6e0a90a594a021
+exp_name="${EXP_NAME:-DLC_2nodes_5ksft_0kl_3B}"
 
 # Environment Variables
 MASTER_ADDR=${MASTER_ADDR}
@@ -68,14 +67,14 @@ if [ $((GPU_TOTAL % BoN )) -ne 0 ]; then
     exit 1
 fi
 
-source /nas/shared/sys2/liyizhi/conda_init.sh
-conda activate verl_public
-cd /nas/shared/sys2/liyizhi/test_tinyzero
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Training Config
-MODEL_PATH="/nas/shared/sys2/liyizhi/Qwen2.5-Coder-3B_5k_sft_opt" # Adjust if you want to use the 7B model or another
-TRAIN_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_not_trained_sft/train.parquet"
-EVAL_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_not_trained_sft/test.parquet"
+MODEL_PATH="${MODEL_PATH:-sft_ckpts/Qwen2.5-Coder-3B_5k_sft_opt}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/dataset5k_not_trained_sft/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/dataset5k_not_trained_sft/test.parquet}"
 
 
 ##################################################################################################################
@@ -235,7 +234,7 @@ if [ "$RANK" -eq 0 ]; then
     
     # - batch_size * rollout.n must be divisible by total_gpus (24)
     ray job submit --address="http://127.0.0.1:8266" \
-        --working-dir=/nas/shared/sys2/liyizhi/test_tinyzero \
+        --working-dir="${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}" \
         --runtime-env=verl/trainer/runtime_env.yaml \
         -- \
         python3 -m verl.trainer.main_ppo \
@@ -277,7 +276,7 @@ if [ "$RANK" -eq 0 ]; then
             trainer.nnodes=${WORLD_SIZE} \
             trainer.save_freq=5 \
             trainer.test_freq=1 \
-            trainer.default_local_dir=/nas/shared/sys2/liyizhi/new_checkpoints/${exp_name} \
+            trainer.default_local_dir="${TRAINER_DEFAULT_LOCAL_DIR:-rl_checkpoints/new_checkpoints/${exp_name}}" \
             trainer.total_epochs=20 | tee ${exp_name}.log
 
     echo "Node ${RANK}: Training finished."

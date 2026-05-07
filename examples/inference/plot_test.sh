@@ -1,5 +1,5 @@
 project_name='Inference'
-exp_name='fengdi_plot_scores_vs_shots'
+exp_name="${EXP_NAME:-reform_plot_scores_vs_shots}"
 WORLD_SIZE=1
 GPUS_PER_NODE=8 # Depend on your need
 # CPUS_PER_TASK=60 # Depend on your need
@@ -19,16 +19,15 @@ MASTER_PORT=${MASTER_PORT:-"29500"}
 WORLD_SIZE=${WORLD_SIZE:-"1"}
 RANK=${RANK:-"0"}
 
-# export WANDB_API_KEY=5edb8fccc26de7f9c2baeb46780bcd22d0588c62
-source /nas/shared/sys2/liyizhi/conda_init.sh
-conda activate /nas/shared/sys2/chefengdi/conda/verl_clone
-cd /nas/shared/sys2/liyizhi/fengdi_tinyzero
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Adjust if you want to use the 7B model or another
-# MODEL_PATH="/root/Qwen2.5-Coder-3B_5k_sft_opt" # Adjust if you want to use the 7B model or another
-TRAIN_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_not_trained_sft/train.parquet"
-# EVAL_FILE="/nas/shared/sys2/chefengdi/dafny_full_log/sft_test_240.parquet"
-EVAL_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_v3/test.parquet"
+MODEL_PATH="${MODEL_PATH:-sft_ckpts/Qwen2.5-Coder-3B_5k_sft_opt}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/dataset5k_not_trained_sft/train.parquet}"
+# EVAL_FILE="dataset/test.parquet"
+EVAL_FILE="${EVAL_FILE:-dataset/dataset5k_v3/test.parquet}"
 # torchrun \
 # --nnodes=$WORLD_SIZE \
 # --nproc_per_node=$GPUS_PER_NODE \
@@ -50,11 +49,11 @@ EVAL_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_v3/test.parque
     trainer.project_name="${project_name}" \
     trainer.experiment_name="${exp_name}" \
     trainer.n_gpus_per_node=${GPUS_PER_NODE} \
-    trainer.nnodes=${WORLDSIZE} \
+    trainer.nnodes=${WORLD_SIZE} \
     trainer.save_output=True \
-    trainer.output_dir=/nas/shared/sys2/chefengdi/eval_log/DLC_test/ \
+    trainer.output_dir="eval_logs/${exp_name}" \
     parallel_processing.tensor_parallel_size=4 \
-    plot.base_paths=["/oss/public/user/chefengdi/ckpts/"] \
+    plot.base_paths=["rl_checkpoints/"] \
     plot.exp_names=["3B_naive_prevent_hacking_rollout_32 "] \
     plot.global_steps=[20] \
     plot.shot_numbers=[128] \

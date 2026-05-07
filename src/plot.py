@@ -4,34 +4,6 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
-# file_list_all = [
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/3B_log_compare/kl/scores_7-16-hour-17/Qwen2.5-Coder-14B_chain300_partial_RLEntropy-mid_rv_scores_7-16-hour-17.json"
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/Report_naive_true/Report_0715_naive_reward_0.5B_scores_7-15-hour-18.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/Report_naive_true/Report_0715_naive_reward_1.5B_scores_7-15-hour-18.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/Report_naive_true/Report_0715_naive_reward_3B_scores_7-15-hour-18.json"
-    # naive reward
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_0.5B_reward_naive_0513_scores_7-12-hour-0.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_1.5B_reward_naive2_scores_7-12-hour-0.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_3B_reward_naive_0513_v5_scores_7-12-hour-0.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_7B_reward_naive_0513_scores_7-12-hour-0.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_14B_reward_naive_v4_scores_7-12-hour-0.json",
-
-    # subset reward
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/grpo_5ksft_0.5B_BoN4_prevent_hacking_v3_0705_9pm_scores_7-13-hour-13.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/grpo_5ksft_1.5B_BoN4_prevent_hacking_v3_0705_9pm_scores_7-13-hour-13.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/3B_prevent_hacking_rollout_4_scores_7-13-hour-13.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/7B_prevent_kl0_lr1e-5_BoN4_scores_7-13-hour-13.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/fengdi_grpo_5ksft_14B_prevent_hacking_v3_0622_11pm_scores_7-13-hour-21.json",
-
-    # kl_entropy
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_0.5B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_1.5B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_7B_BoN4_entropy0.02_with_kl_true_scores_7-13-hour-21.json",
-    # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_14B_BoN4_entropy0.02_with_kl_scores_7-14-hour-0.json"
-# ]
-# dir_name = "/nas/shared/sys2/liyizhi/folder-0709/eval_log/new_bench_records"
-# file_list_all = [dir_name + "/" + name for name in os.listdir(dir_name)]
 
 parse_args = argparse.ArgumentParser()
 parse_args.add_argument("--file_list", type=str, nargs='+', help="file list")

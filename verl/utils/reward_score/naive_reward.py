@@ -4,10 +4,11 @@ import ast
 import operator
 import difflib
 import math
+import os
 import time
 from verl.utils.reward_score.condition_comparison_fixed import *
 
-LOG_DIR = "/nas/shared/sys2/chefengdi/report_full_log_3/"
+LOG_DIR = os.environ.get("REFORM_REWARD_LOG_DIR", "eval_logs/reward_logs")
 def is_fuzzy_match(original, modified):
     """
     验证 modified 是否是 original 插入若干行以及增加或减少空白字符后得到的。
@@ -245,10 +246,10 @@ def execute(cmd, ext, v, timeout_sec = 10, index=-1, exp_name = "exp"):
         runcmd = "timeout --kill-after=5 %s %s %s >%s 2>%s" % (str(timeout_sec), cmd, fn, outfn, errfn)
         # if use_sandbox:
         #     if docker_sandbox:
-        #         runcmd = 'docker run --rm --platform linux/amd64 -v "$(pwd):/app" namin/llm-verified ' + runcmd.replace(fn, "/app/"+fn)
+        #         runcmd = os.environ.get("VERICODE_DOCKER_SANDBOX_CMD", "") + " " + runcmd
         #     else:
-        #         pre_llm_command = "singularity exec --no-mount=/n --no-mount=/net --no-mount=/scratch --no-mount=/cvmfs ~/singularity/llm-verified_latest.sif"
-        #         runcmd = "SINGULARITY_HOME=/ timeout 10 %s %s %s >%s 2>%s" % (pre_llm_command, cmd, fn, outfn, errfn)
+        #         pre_llm_command = os.environ.get("VERICODE_PRE_LLM_COMMAND", "")
+        #         runcmd = "%s timeout 10 %s %s %s >%s 2>%s" % (pre_llm_command, cmd, fn, outfn, errfn)
 
         #print("RUN CMD:", runcmd)
         status = os.system(runcmd)

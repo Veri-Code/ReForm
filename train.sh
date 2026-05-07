@@ -1,5 +1,5 @@
 project_name='VeriCode'
-exp_name='Test'
+exp_name="${EXP_NAME:-Test}"
 WORLDSIZE=1
 GPUS_PER_NODE=8 
 BoN=8
@@ -7,9 +7,9 @@ BATCH_SIZE=1024
 PPO_MINI_BATCH_SIZE=128  
 TENSOR_MODEL_PARALLEL_SIZE=1
 
-MODEL_PATH="sft_ckpts/sft_0.5B" # Adjust if you want to use the 7B model or another
-TRAIN_FILE="dataset/train.parquet"
-EVAL_FILE="dataset/test.parquet"
+MODEL_PATH="${MODEL_PATH:-sft_ckpts/sft_0.5B}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/test.parquet}"
 
 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=grpo \
@@ -53,5 +53,5 @@ python3 -m verl.trainer.main_ppo \
     trainer.nnodes=${WORLDSIZE} \
     trainer.save_freq=20 \
     trainer.test_freq=2 \
-    trainer.default_local_dir=rl_checkpoints/${exp_name} \
+    trainer.default_local_dir="${TRAINER_DEFAULT_LOCAL_DIR:-rl_checkpoints/${exp_name}}" \
     trainer.total_epochs=40 | tee ${exp_name}.log

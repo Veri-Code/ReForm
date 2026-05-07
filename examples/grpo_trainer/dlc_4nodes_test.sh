@@ -8,8 +8,7 @@ export NCCL_SOCKET_IFNAME=en,eth,em,bond
 export NCCL_DEBUG=INFO
 
 project_name='Test'
-exp_name='DLC_4nodes_BoN8'
-export WANDB_API_KEY=2ca4169be643483a1a1694f52e6e0a90a594a021
+exp_name="${EXP_NAME:-DLC_4nodes_BoN8}"
 
 # Environment Variables
 MASTER_ADDR=${MASTER_ADDR}
@@ -68,14 +67,14 @@ if [ $((GPU_TOTAL % BoN )) -ne 0 ]; then
     exit 1
 fi
 
-source /nas/shared/sys2/liyizhi/conda_init.sh
-conda activate verl_public
-cd /nas/shared/sys2/liyizhi/test_tinyzero
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Training Config
-MODEL_PATH="/nas/shared/sys2/liyizhi/test_tinyzero/qwen7B_grid_search_all_18k_vanilla_pure_remove_train_gcs-4_lr-1e-05_epoch-4" # Adjust if you want to use the 7B model or another
-TRAIN_FILE="/nas/shared/sys2/liyizhi/test_tinyzero/dataset8k_pure_remove/train.parquet"
-EVAL_FILE="/nas/shared/sys2/liyizhi/test_tinyzero/dataset8k_pure_remove/test.parquet"
+MODEL_PATH="${MODEL_PATH:-sft_ckpts/qwen7B_grid_search_all_18k_vanilla_pure_remove_train_gcs-4_lr-1e-05_epoch-4}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/dataset8k_pure_remove/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/dataset8k_pure_remove/test.parquet}"
 
 
 ##################################################################################################################
@@ -235,7 +234,7 @@ if [ "$RANK" -eq 0 ]; then
     
     # - batch_size * rollout.n must be divisible by total_gpus (24)
     ray job submit --address="http://127.0.0.1:8266" \
-        --working-dir=/nas/shared/sys2/liyizhi/test_tinyzero \
+        --working-dir="${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}" \
         --runtime-env=verl/trainer/runtime_env.yaml \
         -- \
         python3 -m verl.trainer.main_ppo \

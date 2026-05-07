@@ -282,7 +282,7 @@ def load_megatron_model_weights(config,
                                 parallel_model,
                                 params_dtype,
                                 is_value_model=False,
-                                local_cache_path='~/.cache/verl/rlhf'):
+                                local_cache_path='.cache/verl/rlhf'):
     assert hasattr(model_config, "architectures"), "architectures cannot be empty when load weight!"
     architectures = getattr(model_config, "architectures", [])
     local_cache_path = os.path.expanduser(local_cache_path)
@@ -372,7 +372,7 @@ def load_megatron_gptmodel_weights(config,
                                    parallel_model,
                                    params_dtype,
                                    is_value_model=False,
-                                   local_cache_path='~/.cache/verl/rlhf'):
+                                   local_cache_path='.cache/verl/rlhf'):
     assert hasattr(model_config, "architectures"), "architectures cannot be empty when load weight!"
     architectures = getattr(model_config, "architectures", [])
     local_cache_path = os.path.expanduser(local_cache_path)

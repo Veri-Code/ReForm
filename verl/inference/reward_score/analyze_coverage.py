@@ -10,7 +10,8 @@ def main(gt_code, code):
     """
         
     # Create output filename based on input file
-    output_file = "/nas/shared/sys2/liyizhi/test_tinyzero3/coverage.json"
+    output_file = os.environ.get("REFORM_COVERAGE_OUTPUT", "eval_logs/coverage/coverage.json")
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
     # Analyze coverage
     requires_coverage, ensures_coverage = analyze_spec_coverage(gt_code, code, output_file)
@@ -193,4 +194,4 @@ method GenerateARMatrices(numReservoirs: int, upStreamDep: int, lag: int, t: int
   }
 }
 ```"""
-    main(gt_code,code) 
+    main(gt_code,code)

@@ -167,7 +167,7 @@ class EvalRunner:
         # # Create output directory if it doesn't exist
         # os.makedirs(config.trainer.output_dir, exist_ok=True)
         # # Generate output file path in the output directory
-        # output_file = os.path.join('/nas/shared/sys2/chefengdi/dafny_full_log/', f"{config.data.get('prompt_type', 'sft')}_{os.path.basename(input_file)}")
+        # output_file = os.path.join('eval_logs/inference/', f"{config.data.get('prompt_type', 'sft')}_{os.path.basename(input_file)}")
         # modified_file, inference_results = llm_inference.process_parquet_and_run(
         #     input_file,
         #     output_file=output_file,  # Pass the output file path

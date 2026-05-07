@@ -181,8 +181,8 @@ def clean_data_2(data,max_shot=128,global_steps=['2']):
 def plot_novel_spec():
 
     wrong_data=[
-         "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"
+         "eval_logs/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
+        "eval_logs/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"
         ]
 
     score_idx = 8
@@ -208,7 +208,7 @@ def plot_novel_spec():
         plt.plot(range(1,129), sft_shot_means, label="sft", color=deepmind_colors[1], ms=3)
         marker = [sft_shot_means[r-1] for r in rollouts]  # r-1 because list is 0-indexed
         plt.scatter(rollouts, marker, marker=markers[1], color=deepmind_colors[1], s=50, zorder=5)
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/old_score_novel_spec_compare"
+    shots_output_dir = "eval_logs/Jul_report_results/old_score_novel_spec_compare"
     for idx,model in enumerate(model_names):
         for count,file in enumerate(shot_files[model]):
             label = file.split("global_step_")[-1]
@@ -246,8 +246,8 @@ def plot_novel_spec():
     plt.savefig(os.path.join(shots_output_dir,f"model_compare.pdf"))
     
 def ablation_shots():
-    wrong_data=[ "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"]
+    wrong_data=[ "eval_logs/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
+        "eval_logs/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"]
 
     model_names = [
         "kl_only",
@@ -260,7 +260,7 @@ def ablation_shots():
     colors = {'20':"#009E73", '80':"#D55E00"}
     
     fig, axes = plt.subplots(1, len(model_names), figsize=(4 * len(model_names), 4))
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/old_score_model_shot_compare"
+    shots_output_dir = "eval_logs/Jul_report_results/old_score_model_shot_compare"
     for idx,model in enumerate(model_names):
         for i, score_idx in enumerate([2]):
             ax = axes[idx]
@@ -325,19 +325,19 @@ def ablation_shots():
 
 def compare_shots():
     file_lists = [
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0entropy_0.01kl_xh1/global_step_20/scores/scores_7-11-hour-20/global_step_20_scores_7-11-hour-20.json",
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_40_scores_7-10-hour-10.json",
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_20_scores_7-10-hour-10.json",
+        # "eval_logs/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0entropy_0.01kl_xh1/global_step_20/scores/scores_7-11-hour-20/global_step_20_scores_7-11-hour-20.json",
+        # "eval_logs/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_40_scores_7-10-hour-10.json",
+        # "eval_logs/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_20_scores_7-10-hour-10.json",
         
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_subset_diversity_kl/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.085_clip_mean_1_kw_sim_v4_0.02entropy_0.01kl_xh2/global_step_40/eval_results.json",
-        "/nas/shared/sys2/chefengdi/eval_log/DLC_subset_diversity_xuhan_newest/scores/scores_7-12-hour-8/global_step_160_scores_7-12-hour-8.json",
-        "/nas/shared/sys2/chefengdi/eval_log/DLC_subset_diversity_xuhan_newest/scores/scores_7-12-hour-8/global_step_320_scores_7-12-hour-8.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset_new/scores_7-11-hour-17/global_step_40_scores_7-11-hour-17.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset_new/scores_7-11-hour-17/saves_scores_7-11-hour-17.json",
+        # "eval_logs/DLC_subset_diversity_kl/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.085_clip_mean_1_kw_sim_v4_0.02entropy_0.01kl_xh2/global_step_40/eval_results.json",
+        "eval_logs/DLC_subset_diversity_xuhan_newest/scores/scores_7-12-hour-8/global_step_160_scores_7-12-hour-8.json",
+        "eval_logs/DLC_subset_diversity_xuhan_newest/scores/scores_7-12-hour-8/global_step_320_scores_7-12-hour-8.json",
+        "eval_logs/3B_sft_128/new_score_subset_new/scores_7-11-hour-17/global_step_40_scores_7-11-hour-17.json",
+        "eval_logs/3B_sft_128/new_score_subset_new/scores_7-11-hour-17/saves_scores_7-11-hour-17.json",
     ]
 
-    wrong_data=[ "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"]
+    wrong_data=[ "eval_logs/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
+        "eval_logs/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"]
 
     model_names = [
         "naive",
@@ -351,7 +351,7 @@ def compare_shots():
     marker_indices = (powers - 1).tolist()
     
     fig, axes = plt.subplots(1, len(model_names), figsize=(4 * len(model_names), 4))
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/old_score_model_shot_compare"
+    shots_output_dir = "eval_logs/Jul_report_results/old_score_model_shot_compare"
     for idx,model in enumerate(model_names):
         for i, score_idx in enumerate([2]):
             ax = axes[idx]

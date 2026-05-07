@@ -3,6 +3,7 @@
 /logs/
 /rl_checkpoints/
 /eval_log/
+/eval_logs/
 /dataset2/
 flash_attn-2.7.4.post1+cu12torch2.6cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 temp.dfy
@@ -10,3 +11,15 @@ out.txt
 /dataset2_autospec/
 /dataset3/
 7B_autospec_train.sh
+/hf_assets/
+/sft_ckpts/
+/repro_artifacts/
+/repro_logs/
+
+# Python/cache artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.nfs*
+.ipynb_checkpoints/
+*.egg-info/

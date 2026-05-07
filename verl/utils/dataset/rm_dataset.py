@@ -47,7 +47,7 @@ class RMDataset(Dataset):
                  rejected_key='rejected',
                  max_length=1024,
                  add_eos=True,
-                 cache_dir='~/.cache/verl/rm'):
+                 cache_dir='.cache/verl/rm'):
         if not isinstance(parquet_files, List):
             parquet_files = [parquet_files]
 

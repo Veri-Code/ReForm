@@ -117,7 +117,7 @@ def qwen_coder():
     mp.set_start_method('spawn', force=True)
     for size in ['7B']:
         tasks = []
-        file_dir = f"/nas/shared/sys2/chefengdi/report_shots/qwen_coder/Qwen2.5-Coder-{size}/Qwen2.5-Coder-{size}/models"
+        file_dir = f"eval_logs/report_shots/qwen_coder/Qwen2.5-Coder-{size}/Qwen2.5-Coder-{size}/models"
         for index in range(512):
             filelists = [int(x[:-4]) for x in os.listdir(os.path.join(file_dir,str(index))) if x.endswith(".dfy") and x not in ["gt.dfy", "input.dfy"]]
         
@@ -136,7 +136,7 @@ def qwen_coder():
                 index,
                 f"Qwen-coder-{size}",
                 "one_score",
-                f"/nas/shared/sys2/chefengdi/eval_log/qwen_eval_{size}"
+                f"eval_logs/qwen_eval_{size}"
             )
             tasks.append(task)
         
@@ -178,7 +178,7 @@ def qwen_coder():
         print(f"Mean scores: {np.mean(scores, axis=0)}")
 
 def gt_novel_spec_rate():
-    folder = "/nas/shared/sys2/chefengdi/report_shots/3B_BoN4_subset/global_step_20"
+    folder = "eval_logs/report_shots/3B_BoN4_subset/global_step_20"
     tasks = []
     for index in range(512):
         file = os.path.join(folder, str(index), "gt.dfy")
@@ -191,7 +191,7 @@ def gt_novel_spec_rate():
             index,
             "gt_spec",
             "one_score",
-            f"/nas/shared/sys2/chefengdi/eval_log/GPT_eval_2"
+            f"eval_logs/GPT_eval_2"
         )
         tasks.append(task)
     
@@ -239,15 +239,15 @@ def check_GPT():
     score_lists = {}
     
     file_lists =[
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/generation_res/eval_test_gpt-4o_results_rv.json",
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/generation_res/Qwen2.5-Coder-14B_eval_test_14B_sft-mid_rv.json",
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/generation_res/Qwen2.5-Coder-14B_eval_test_14B-EntropyRL-mid_rv.json",
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/generation_res/dafny100_gpt-4o_results_rv.json",
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/generation_res/Qwen2.5-Coder-14B_dafny100_14B_sft-mid_rv.json",
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/generation_res/Qwen2.5-Coder-14B_dafny100_14B-EntroRL_mid_rv.json",
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/autospec_res/dfyautospec_chain300_gpt-4o_results_rv.json",
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/autospec_res/Qwen2.5-Coder-14B_chain300_partial_SFT-mid_rv.json",
-        "/nas/shared/sys2/liyizhi/InferenceTimeScaling4Dafny_yizhi/analysis_results/autospec_res/Qwen2.5-Coder-14B_chain300_partial_RLEntropy-mid_rv.json",
+        "eval_logs/inference_time_scaling/generation_res/eval_test_gpt-4o_results_rv.json",
+        "eval_logs/inference_time_scaling/generation_res/Qwen2.5-Coder-14B_eval_test_14B_sft-mid_rv.json",
+        "eval_logs/inference_time_scaling/generation_res/Qwen2.5-Coder-14B_eval_test_14B-EntropyRL-mid_rv.json",
+        "eval_logs/inference_time_scaling/generation_res/dafny100_gpt-4o_results_rv.json",
+        "eval_logs/inference_time_scaling/generation_res/Qwen2.5-Coder-14B_dafny100_14B_sft-mid_rv.json",
+        "eval_logs/inference_time_scaling/generation_res/Qwen2.5-Coder-14B_dafny100_14B-EntroRL_mid_rv.json",
+        "eval_logs/inference_time_scaling/autospec_res/dfyautospec_chain300_gpt-4o_results_rv.json",
+        "eval_logs/inference_time_scaling/autospec_res/Qwen2.5-Coder-14B_chain300_partial_SFT-mid_rv.json",
+        "eval_logs/inference_time_scaling/autospec_res/Qwen2.5-Coder-14B_chain300_partial_RLEntropy-mid_rv.json",
     ]
     for file in file_lists:
         data = []
@@ -280,7 +280,7 @@ def check_GPT():
                 i,
                 "GPT-4o",
                 "one_score",
-                "/nas/shared/sys2/chefengdi/eval_log/GPT_eval_2"
+                "eval_logs/GPT_eval_2"
             )
             tasks.append(task)
         
@@ -391,8 +391,8 @@ def clean_data_2(data,max_shot=128,global_steps=['2']):
 def plot_novel_spec():
 
     wrong_data=[
-         "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"
+         "eval_logs/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
+        "eval_logs/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"
         ]
 
     score_idx = 8
@@ -418,7 +418,7 @@ def plot_novel_spec():
         plt.plot(range(1,129), sft_shot_means, label="sft", color=deepmind_colors[1], ms=3)
         marker = [sft_shot_means[r-1] for r in rollouts]  # r-1 because list is 0-indexed
         plt.scatter(rollouts, marker, marker=markers[1], color=deepmind_colors[1], s=50, zorder=5)
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/old_score_novel_spec_compare"
+    shots_output_dir = "eval_logs/Jul_report_results/old_score_novel_spec_compare"
     for idx,model in enumerate(model_names):
         for count,file in enumerate(shot_files[model]):
             label = file.split("global_step_")[-1]
@@ -456,8 +456,8 @@ def plot_novel_spec():
     plt.savefig(os.path.join(shots_output_dir,f"model_compare.pdf"))
     
 def ablation_shots():
-    wrong_data=[ "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"]
+    wrong_data=[ "eval_logs/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
+        "eval_logs/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"]
 
     model_names = [
         "kl_only",
@@ -470,7 +470,7 @@ def ablation_shots():
     colors = {'20':"#009E73", '80':"#D55E00"}
     
     fig, axes = plt.subplots(1, len(model_names), figsize=(4 * len(model_names), 4))
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/old_score_model_shot_compare"
+    shots_output_dir = "eval_logs/Jul_report_results/old_score_model_shot_compare"
     for idx,model in enumerate(model_names):
         for i, score_idx in enumerate([2]):
             ax = axes[idx]
@@ -535,19 +535,19 @@ def ablation_shots():
 
 def compare_shots():
     file_lists = [
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0entropy_0.01kl_xh1/global_step_20/scores/scores_7-11-hour-20/global_step_20_scores_7-11-hour-20.json",
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_40_scores_7-10-hour-10.json",
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_20_scores_7-10-hour-10.json",
+        # "eval_logs/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0entropy_0.01kl_xh1/global_step_20/scores/scores_7-11-hour-20/global_step_20_scores_7-11-hour-20.json",
+        # "eval_logs/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_40_scores_7-10-hour-10.json",
+        # "eval_logs/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_20_scores_7-10-hour-10.json",
         
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_subset_diversity_kl/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.085_clip_mean_1_kw_sim_v4_0.02entropy_0.01kl_xh2/global_step_40/eval_results.json",
-        "/nas/shared/sys2/chefengdi/eval_log/DLC_subset_diversity_xuhan_newest/scores/scores_7-12-hour-8/global_step_160_scores_7-12-hour-8.json",
-        "/nas/shared/sys2/chefengdi/eval_log/DLC_subset_diversity_xuhan_newest/scores/scores_7-12-hour-8/global_step_320_scores_7-12-hour-8.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset_new/scores_7-11-hour-17/global_step_40_scores_7-11-hour-17.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset_new/scores_7-11-hour-17/saves_scores_7-11-hour-17.json",
+        # "eval_logs/DLC_subset_diversity_kl/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.085_clip_mean_1_kw_sim_v4_0.02entropy_0.01kl_xh2/global_step_40/eval_results.json",
+        "eval_logs/DLC_subset_diversity_xuhan_newest/scores/scores_7-12-hour-8/global_step_160_scores_7-12-hour-8.json",
+        "eval_logs/DLC_subset_diversity_xuhan_newest/scores/scores_7-12-hour-8/global_step_320_scores_7-12-hour-8.json",
+        "eval_logs/3B_sft_128/new_score_subset_new/scores_7-11-hour-17/global_step_40_scores_7-11-hour-17.json",
+        "eval_logs/3B_sft_128/new_score_subset_new/scores_7-11-hour-17/saves_scores_7-11-hour-17.json",
     ]
 
-    wrong_data=[ "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
-        "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"]
+    wrong_data=[ "eval_logs/3B_sft_128/new_score_subset/scores_7-11-hour-11/global_step_40_scores_7-11-hour-11.json",
+        "eval_logs/3B_sft_128/new_score/scores_7-10-hour-22/saves_scores_7-10-hour-22.json"]
 
     model_names = [
         "naive",
@@ -561,7 +561,7 @@ def compare_shots():
     marker_indices = (powers - 1).tolist()
     
     fig, axes = plt.subplots(1, len(model_names), figsize=(4 * len(model_names), 4))
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/old_score_model_shot_compare"
+    shots_output_dir = "eval_logs/Jul_report_results/old_score_model_shot_compare"
     for idx,model in enumerate(model_names):
         for i, score_idx in enumerate([2]):
             ax = axes[idx]
@@ -628,10 +628,10 @@ def compare_shots():
 
 def compare_training_log():
     file_list = [
-        "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/train_shot_compare-3B-new/xuhan/scores_7-12-hour-14/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_xh1_scores_7-12-hour-14.json",
-        "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/train_shot_compare-3B-new/scores_7-12-hour-13/3B_prevent_hacking_rollout_4_scores_7-12-hour-13.json",
-        "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/train_shot_compare-3B-new/scores_7-12-hour-13/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0entropy_0.01kl_xh1_scores_7-12-hour-13.json",
-        "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/train_shot_compare-3B-new/scores_7-12-hour-13/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-12-hour-13.json"
+        "eval_logs/Jul_report_results/train_shot_compare-3B-new/xuhan/scores_7-12-hour-14/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_xh1_scores_7-12-hour-14.json",
+        "eval_logs/Jul_report_results/train_shot_compare-3B-new/scores_7-12-hour-13/3B_prevent_hacking_rollout_4_scores_7-12-hour-13.json",
+        "eval_logs/Jul_report_results/train_shot_compare-3B-new/scores_7-12-hour-13/DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0entropy_0.01kl_xh1_scores_7-12-hour-13.json",
+        "eval_logs/Jul_report_results/train_shot_compare-3B-new/scores_7-12-hour-13/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-12-hour-13.json"
     ]
 
     model_names = [
@@ -641,7 +641,7 @@ def compare_training_log():
         "chuanhao_40",
         # "sft"
     ]
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/first_training_log_compare"
+    shots_output_dir = "eval_logs/Jul_report_results/first_training_log_compare"
     if not os.path.exists(shots_output_dir):
         os.makedirs(shots_output_dir)
     cumulative_scores = {}
@@ -667,13 +667,13 @@ def compare_training_log():
     plot_scores(cumulative_scores,global_steps, shot_numbers, shots_output_dir)
 
 def move_files():
-    curr_dir = "/nas/shared/sys2/chefengdi/eval_log/DLC_subset_diversity"
+    curr_dir = "eval_logs/DLC_subset_diversity"
     file_dirs= [
         "DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0.02entropy_0.01kl_xh1/global_step_20",
         "DLC-diversity_reward_qwen_3b_5k_sft_5k_rl_4rollout_0_1scale_5000_ref_0.1_clip_mean_1_kw_v3_0entropy_0.01kl_xh1/global_step_20"
     ]
 
-    mv_dir = "/nas/shared/sys2/chefengdi/eval_log/DLC_subset_diversity_kl"
+    mv_dir = "eval_logs/DLC_subset_diversity_kl"
 
     for file_dir in file_dirs:
         count = 0
@@ -704,17 +704,17 @@ def move_files():
 
 def plot_saved_scores():
     file_dirs= [
-        "/nas/shared/sys2/chefengdi/eval_log/3B_log_compare/kl/scores_7-10-hour-20/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-10-hour-20.json",
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-16/global_step_20_scores_7-10-hour-16.json",
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_20_scores_7-10-hour-10.json",
-        # "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_40_scores_7-10-hour-10.json"
+        "eval_logs/3B_log_compare/kl/scores_7-10-hour-20/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-10-hour-20.json",
+        # "eval_logs/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-16/global_step_20_scores_7-10-hour-16.json",
+        # "eval_logs/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_20_scores_7-10-hour-10.json",
+        # "eval_logs/DLC_naive_128/new_score_diveristy_kl/scores_7-10-hour-10/global_step_40_scores_7-10-hour-10.json"
     ]
     names = ["baseline_40",
         "v_3_0.02entropy_0.01kl",
         "v_3_0entropy_0.01kl",
         "v_4_0.02entropy_0.01kl",
     ]
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/new_score_kl/shots_plot"
+    shots_output_dir = "eval_logs/DLC_naive_128/new_score_kl/shots_plot"
 
     cumulative_scores = {}
     for i, file_dir in enumerate(file_dirs):

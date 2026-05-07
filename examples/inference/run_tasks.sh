@@ -14,19 +14,18 @@ CPUS_PER_TASK=96 # Depend on your need
 MEM_PER_TASK=$((1280 * 1280 ** 3)) # Depend on your need
 GPU_TOTAL=$((GPUS_PER_NODE * WORLD_SIZE))
 
-# export WANDB_API_KEY=5edb8fccc26de7f9c2baeb46780bcd22d0588c62
-source /nas/shared/sys2/liyizhi/conda_init.sh
-conda activate /nas/shared/sys2/chefengdi/conda/verl_clone
-cd /nas/shared/sys2/liyizhi/test_tinyzero3
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Adjust if you want to use the 7B model or another
-MODEL_PATH="/root/Qwen2.5-Coder-3B_5k_sft_opt" # Adjust if you want to use the 7B model or another
-TRAIN_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_not_trained_sft/train.parquet"
-EVAL_FILE="/nas/shared/sys2/chefengdi/dafny_full_log/dafny_bench_lemma_kept_remove_240.parquet"
+MODEL_PATH="${MODEL_PATH:-sft_ckpts/Qwen2.5-Coder-3B_5k_sft_opt}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/dataset5k_not_trained_sft/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/dafny_bench_lemma_kept_remove_240.parquet}"
 
 
 # Default values
-TASKS_FILE="/nas/shared/sys2/chefengdi/eval_log/tasks/eval_tasks.json"
+TASKS_FILE="eval_logs/tasks/eval_tasks.json"
 NUM_GPUS=4
 BATCH_SIZE=48   # 48 is the max batch size for 4 GPUs
 
@@ -80,7 +79,7 @@ run_task() {
         trainer.save_output=True \
         parallel_processing.tensor_parallel_size="$NUM_GPUS" \
         trainer.n_gpus_per_node = "$NUM_GPUS" \
-        trainer.output_dir=/nas/shared/sys2/chefengdi/eval_log/3B_bench_16shots/ \
+        trainer.output_dir="$task_output_dir" \
     # Delete the task_output_dir
     rm -rf "$task_output_dir"
 

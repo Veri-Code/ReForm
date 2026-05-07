@@ -65,7 +65,7 @@ def model_scale():
     fig.suptitle(f"Pass@1 Results Across Model Sizes", fontsize=13)
     plt.tight_layout(rect=[0, 0, 1, 0.9])
     plt.subplots_adjust(top=0.84)
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/model_size"
+    shots_output_dir = "eval_logs/Jul_report_results/model_size"
     if not os.path.exists(shots_output_dir):
         os.makedirs(shots_output_dir)
 
@@ -78,9 +78,9 @@ def ablation():
         'subset+KL+entropy'
     ]
     folder_names = [
-        "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/pass_one/scores_7-16-hour-0/3B_BoN4_entropy_only_scores_7-16-hour-0.json",
-        "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/pass_one/scores_7-16-hour-0/3B_BoN4_kl_only_scores_7-16-hour-0.json",
-        "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/pass_one/scores_7-16-hour-19/3B_BoN4_entropy_scores_7-16-hour-19.json"
+        "eval_logs/Jul_report_results/pass_one/scores_7-16-hour-0/3B_BoN4_entropy_only_scores_7-16-hour-0.json",
+        "eval_logs/Jul_report_results/pass_one/scores_7-16-hour-0/3B_BoN4_kl_only_scores_7-16-hour-0.json",
+        "eval_logs/Jul_report_results/pass_one/scores_7-16-hour-19/3B_BoN4_entropy_scores_7-16-hour-19.json"
     ]
     colors = [
         "#56B4E9",  # light blue
@@ -110,7 +110,7 @@ def ablation():
     plt.title("Spec Superiority Rate Versus Training Steps",fontsize=12)
     plt.tight_layout(rect=[0, 0, 1, 0.9])
     plt.subplots_adjust(top=0.8)
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/final_ablation"
+    shots_output_dir = "eval_logs/Jul_report_results/final_ablation"
     if not os.path.exists(shots_output_dir):
         os.makedirs(shots_output_dir)
 

@@ -59,7 +59,7 @@ def plot_all_score_radars():
     """Create radar plots for each score type across all datasets and models."""
     
     # Create output directory
-    shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/radar"
+    shots_output_dir = "eval_logs/Jul_report_results/radar"
     if not os.path.exists(shots_output_dir):
         os.makedirs(shots_output_dir)
     
@@ -263,7 +263,7 @@ def plot_all_score_radars():
 #     ax.fill(angles, base, alpha=0.25, color='orange')
 
 #     # Create output directory
-#     shots_output_dir = "/nas/shared/sys2/chefengdi/eval_log/Jul_report_results/radar"
+#     shots_output_dir = "eval_logs/Jul_report_results/radar"
 #     if not os.path.exists(shots_output_dir):
 #         os.makedirs(shots_output_dir)
 

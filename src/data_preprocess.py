@@ -11,6 +11,15 @@ import argparse
 import json
 import numpy as np
 
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+DEFAULT_LOCAL_DATASET_PATH = os.path.join(
+    REPO_ROOT,
+    "hf_assets",
+    "datasets",
+    "ReForm-Python2Dafny-Dataset",
+    "python2dafny_18k.json",
+)
+
 def make_prefix(dp):
     hints_removed = dp['input'].replace("```dafny", "").replace("```", "")
     ground_truth = dp['output']
@@ -24,9 +33,20 @@ def make_prefix(dp):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--local_dir', default='dataset2')
+    parser.add_argument(
+        '--dataset_path',
+        default=os.environ.get(
+            'REFORM_PYTHON2DAFNY_JSON',
+            DEFAULT_LOCAL_DATASET_PATH if os.path.exists(DEFAULT_LOCAL_DATASET_PATH) else None,
+        ),
+        help='Path to local Python2Dafny JSON. Defaults to hf_assets if downloaded; falls back to Hugging Face.',
+    )
     args = parser.parse_args()
-    
-    raw_dataset = load_dataset("Veri-Code/ReForm-Python2Dafny-Dataset")["train"]
+
+    if args.dataset_path:
+        raw_dataset = load_dataset('json', data_files=args.dataset_path, split='train')
+    else:
+        raw_dataset = load_dataset("Veri-Code/ReForm-Python2Dafny-Dataset")["train"]
 
     # if use JSON style input, use the following codes
     # with open(train_json, 'r') as f:
@@ -72,7 +92,7 @@ if __name__ == '__main__':
     test_dataset = test_dataset.map(function=make_map_fn('test'), with_indices=True)
 
     local_dir = args.local_dir
+    os.makedirs(local_dir, exist_ok=True)
 
     train_dataset.to_parquet(os.path.join(local_dir, 'train.parquet'))
     test_dataset.to_parquet(os.path.join(local_dir, 'test.parquet'))
-

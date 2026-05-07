@@ -12,7 +12,7 @@ from verl.utils.reward_score.subset_reward import *
 from verl.utils.reward_score.condition_comparison_fixed import *
 from verl.inference.reward_score.spec_coverage import analyze_spec_coverage
 
-LOG_DIR = "/nas/shared/sys2/chefengdi/report_full_log_3/"
+LOG_DIR = os.environ.get("REFORM_REWARD_LOG_DIR", "eval_logs/reward_logs")
 
 
 def format_reward(solution_str: str):

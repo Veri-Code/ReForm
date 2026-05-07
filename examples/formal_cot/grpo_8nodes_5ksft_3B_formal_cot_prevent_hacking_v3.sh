@@ -7,10 +7,6 @@ export NCCL_IB_GID_INDEX=3
 export NCCL_SOCKET_IFNAME=en,eth,em,bond
 export NCCL_DEBUG=INFO
 
-export https_proxy=https://chefengdi:mAb5h9O0Q3TMDmImKhsB5DQvOA5HcCQvtcQnvFSiRX0w8jGG98w64i51Lj9f@aliyun-proxy.pjlab.org.cn:13128
-export http_proxy=https://chefengdi:mAb5h9O0Q3TMDmImKhsB5DQvOA5HcCQvtcQnvFSiRX0w8jGG98w64i51Lj9f@aliyun-proxy.pjlab.org.cn:13128
-export HTTP_PROXY=https://chefengdi:mAb5h9O0Q3TMDmImKhsB5DQvOA5HcCQvtcQnvFSiRX0w8jGG98w64i51Lj9f@aliyun-proxy.pjlab.org.cn:13128
-export HTTPS_PROXY=https://chefengdi:mAb5h9O0Q3TMDmImKhsB5DQvOA5HcCQvtcQnvFSiRX0w8jGG98w64i51Lj9f@aliyun-proxy.pjlab.org.cn:13128
 
 export no_proxy=localhost,127.0.0.1
 export no_proxy="localhost,127.0.0.1,*local"
@@ -18,8 +14,7 @@ export no_proxy="localhost,127.0.0.1"
 
 
 project_name='FinalTest'
-exp_name='fengdi_grpo_5ksft_3B_formal_cot_spec_reward_hacking_v3_0618_9pm'
-export WANDB_API_KEY=5edb8fccc26de7f9c2baeb46780bcd22d0588c62
+exp_name="${EXP_NAME:-reform_grpo_5ksft_3B_formal_cot_spec_reward_hacking_v3_0618_9pm}"
 # export WANDB_MODE=offline
 
 # Environment Variables
@@ -79,14 +74,14 @@ if [ $((GPU_TOTAL % BoN )) -ne 0 ]; then
     exit 1
 fi
 
-source /nas/shared/sys2/liyizhi/conda_init.sh
-conda activate verl_public
-cd /nas/shared/sys2/liyizhi/fengdi_tinyzero
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Training Config
-MODEL_PATH="/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/a2a_lemma_kept_cot/Qwen2.5-Coder-3B_a2a_lemma_kept_cot_in1_sft"
-TRAIN_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_v3/train.parquet"
-EVAL_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_v3/test.parquet"
+MODEL_PATH="${MODEL_PATH:-sft_ckpts/saves/a2a_lemma_kept_cot/Qwen2.5-Coder-3B_a2a_lemma_kept_cot_in1_sft}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/dataset5k_v3/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/dataset5k_v3/test.parquet}"
 
 
 
@@ -247,7 +242,7 @@ if [ "$RANK" -eq 0 ]; then
     
     # - batch_size * rollout.n must be divisible by total_gpus (24)
     ray job submit --address="http://127.0.0.1:8266" \
-        --working-dir=/nas/shared/sys2/liyizhi/fengdi_tinyzero \
+        --working-dir="${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}" \
         --runtime-env=verl/trainer/runtime_env.yaml \
         -- \
         python3 -m verl.trainer.main_ppo \
@@ -292,7 +287,7 @@ if [ "$RANK" -eq 0 ]; then
             trainer.nnodes=${WORLD_SIZE} \
             trainer.save_freq=20 \
             trainer.test_freq=2 \
-            trainer.default_local_dir=/oss/public/user/chefengdi/ckpts/${exp_name} \
+            trainer.default_local_dir="${TRAINER_DEFAULT_LOCAL_DIR:-rl_checkpoints/reform/${exp_name}}" \
             trainer.total_epochs=20 | tee ${exp_name}.log
 
     echo "Node ${RANK}: Training finished."

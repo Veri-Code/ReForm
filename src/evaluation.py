@@ -7,6 +7,7 @@ import shutil
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
+from pathlib import Path
 
 from verl.utils.reward_score.naive_reward import *
 from verl.inference.reward_score.spec_coverage import *
@@ -22,10 +23,15 @@ IF running training result: change BoN to 1 and change exp_name to the basename 
 
 # Thread-safe lock for printing and shared data
 print_lock = threading.Lock()
+REPO_ROOT = Path(__file__).resolve().parents[1]
+LEGACY_GT_DATASET_PATH = REPO_ROOT / "LLaMA-Factory" / "data" / "processed_data" / "rl_opt_5k_vanilla_pure_complex_and_hacking_remove_v3_train.json"
+FALLBACK_GT_DATASET_PATH = REPO_ROOT / "LLaMA-Factory" / "data" / "processed_data" / "opt_5k_vanilla_pure_remove_train.json"
+DEFAULT_GT_DATASET_PATH = LEGACY_GT_DATASET_PATH if LEGACY_GT_DATASET_PATH.exists() else FALLBACK_GT_DATASET_PATH
+GT_DATASET_PATH = os.environ.get("REFORM_GT_DATASET_PATH", str(DEFAULT_GT_DATASET_PATH))
+EVAL_PLOT_DIR = os.environ.get("REFORM_EVAL_PLOT_DIR", "eval_logs/eval_plot")
 
 def process_gt(llm_code,folder_name, index):
-    gt_dataset_path = "/nas/shared/sys2/liyizhi/dafny_process/processed_data/rl_opt_5k_vanilla_pure_complex_and_hacking_remove_v3_train.json"
-    gt_dataset = json.load(open(gt_dataset_path, 'r'))
+    gt_dataset = json.load(open(GT_DATASET_PATH, 'r'))
     dir_path = os.path.join(folder_name, str(index))
     
     llm_first = llm_code.split('\n', 1)[0]
@@ -97,18 +103,19 @@ def process_single_index(folder_name, index, BoN=1):
             gt_code, 
             exp_name = 'test_score',
             index = index, 
-            output_dir="/nas/shared/sys2/liyizhi/folder-0709/eval_log/eval_plot_2/",
+            output_dir=EVAL_PLOT_DIR,
             eval_plot=True
             )
         # print(scores[idx//BoN][idx%BoN])
         # # # delete all files in the folder
     if scores[idx//BoN][idx%BoN][8] != 1:
-        delete_dir = os.path.join("/nas/shared/sys2/liyizhi/folder-0709/eval_log/eval_plot_2/", str(index))
-        for file in os.listdir(delete_dir):
-            if os.path.isdir(os.path.join(delete_dir, file)):
-                shutil.rmtree(os.path.join(delete_dir, file))
-            else:
-                os.remove(os.path.join(delete_dir, file))
+        delete_dir = os.path.join(EVAL_PLOT_DIR, str(index))
+        if os.path.exists(delete_dir):
+            for file in os.listdir(delete_dir):
+                if os.path.isdir(os.path.join(delete_dir, file)):
+                    shutil.rmtree(os.path.join(delete_dir, file))
+                else:
+                    os.remove(os.path.join(delete_dir, file))
     return scores
 
 def count_result_parallel(folder_name,BoN, max_workers=8):
@@ -166,8 +173,12 @@ if __name__ == "__main__":
     parser.add_argument('--workers', type=int, default=8, help='Number of worker threads (default: 8)')
     
     parser.add_argument('--folder_names', nargs='+', required=True, help='List of folder names')
+    parser.add_argument('--gt_dataset_path', default=GT_DATASET_PATH, help='Ground-truth JSON dataset path')
+    parser.add_argument('--eval_plot_dir', default=EVAL_PLOT_DIR, help='Directory for temporary evaluation plot artifacts')
 
     args = parser.parse_args()
+    GT_DATASET_PATH = args.gt_dataset_path
+    EVAL_PLOT_DIR = args.eval_plot_dir
     cumulative_scores = {}
 
     folder_names = args.folder_names
@@ -175,7 +186,7 @@ if __name__ == "__main__":
 
     BoN = 1
     max_step_num =0 
-    local_dir = "eval_log/"
+    local_dir = "eval_logs/"
     import datetime
 
     x  = datetime.datetime.now()
@@ -288,7 +299,7 @@ if __name__ == "__main__":
                             reordered_cumulative_scores[exp]['cumulative_results'][step][shot_key] = cumulative_scores[exp_name]['cumulative_results']['2'][shot_key]
             return reordered_cumulative_scores
 
-        local_dir = "eval_log/"
+        local_dir = "eval_logs/"
         plot_dir = os.path.join(local_dir, "plots")
         if not os.path.exists(local_dir):
             os.makedirs(local_dir)
@@ -300,7 +311,7 @@ if __name__ == "__main__":
         shot_num = 8
         plot_scores(reordered_cumulative_scores, global_steps, range(1, shot_num+1), plot_dir)
 
-        shots_output_dir = os.path.join('eval_log/3B_log_compare/round_5', "shots_comparison/")
+        shots_output_dir = os.path.join('eval_logs/3B_log_compare/round_5', "shots_comparison/")
         # print(f"Target steps for shots plot: [2,5,9]")
         # print(f"Available steps: {list(range(step_num))}")
         plot_scores_vs_shots(reordered_cumulative_scores, global_steps, range(1,shot_num+1), shots_output_dir,target_steps=[0,20,40])
@@ -403,7 +414,7 @@ if __name__ == "__main__":
 # }
 # ```
 # """
-#     output_dir = "/nas/shared/sys2/chefengdi/eval_log/eval_plot/test"
+#     output_dir = "eval_logs/eval_plot/test"
 #     gt_insert_code = strip_specs_and_inject_asserts(gt_code, code, key="one_score",output_file=output_dir) 
 #     print(gt_insert_code)
 #     one_score_dict = execute_diff_location("dafny verify", "dfy", gt_insert_code, timeout_sec=30, index=10, exp_name='test', output_dir=output_dir)

@@ -7,18 +7,13 @@ export NCCL_IB_GID_INDEX=3
 export NCCL_SOCKET_IFNAME=en,eth,em,bond
 export NCCL_DEBUG=INFO
 export TORCH_NCCL_ASYNC_ERROR_HANDLING=1
-export https_proxy=https://huangxuhan.p:GhgefK5xRayBnEsH5hzIBmMlhA5DE3k0pEc6muhoZAtG4qquzKZLMwrbKrRq@aliyun-proxy.pjlab.org.cn:13128
-export http_proxy=https://huangxuhan.p:GhgefK5xRayBnEsH5hzIBmMlhA5DE3k0pEc6muhoZAtG4qquzKZLMwrbKrRq@aliyun-proxy.pjlab.org.cn:13128
-export HTTP_PROXY=https://huangxuhan.p:GhgefK5xRayBnEsH5hzIBmMlhA5DE3k0pEc6muhoZAtG4qquzKZLMwrbKrRq@aliyun-proxy.pjlab.org.cn:13128
-export HTTPS_PROXY=https://huangxuhan.p:GhgefK5xRayBnEsH5hzIBmMlhA5DE3k0pEc6muhoZAtG4qquzKZLMwrbKrRq@aliyun-proxy.pjlab.org.cn:13128
 
 export no_proxy=localhost,127.0.0.1
 export no_proxy="localhost,127.0.0.1,*local"
 export no_proxy="localhost,127.0.0.1"
 
 project_name='Diversity_Reward'
-exp_name='Diversity_reward_3B_v3_0entropy_0.03kl_xh1'
-export WANDB_API_KEY=5edb8fccc26de7f9c2baeb46780bcd22d0588c62
+exp_name="${EXP_NAME:-Diversity_reward_3B_v3_0entropy_0.03kl_xh1}"
 # export WANDB_MODE=disabled
 
 # Environment Variables
@@ -85,15 +80,15 @@ if [ $((GPU_TOTAL % BoN )) -ne 0 ]; then
     exit 1
 fi
 
-source /nas/shared/sys2/liyizhi/conda_init.sh 
-conda activate verl
-cd /cpfs04/user/huangxuhan_p/projects/fengdi_tinyzero
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Training Config
-MODEL_PATH="/nas/shared/sys2/liyizhi/Qwen2.5-Coder-3B_5k_sft_opt"  # Adjust if you want to use the 7B model or another
-TRAIN_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_v3/train.parquet"
-EVAL_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_v3/test.parquet"
-ENCODER_PATH="/cpfs04/user/huangxuhan_p/models/encoder/Qodo-Embed-1-1.5B"
+MODEL_PATH="${MODEL_PATH:-sft_ckpts/Qwen2.5-Coder-3B_5k_sft_opt}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/dataset5k_v3/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/dataset5k_v3/test.parquet}"
+ENCODER_PATH="${ENCODER_PATH:-models/encoder/Qodo-Embed-1-1.5B}"
 
 
 ##################################################################################################################
@@ -254,7 +249,7 @@ if [ "$RANK" -eq 0 ]; then
     # - batch_size * rollout.n must be divisible by total_gpus (24)
 
     ray job submit --address="http://127.0.0.1:8266" \
-        --working-dir=/cpfs04/user/huangxuhan_p/projects/fengdi_tinyzero \
+        --working-dir="${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}" \
         --runtime-env=verl/trainer/runtime_env.yaml \
         -- \
         python3 -m verl.trainer.main_ppo \
@@ -308,7 +303,7 @@ if [ "$RANK" -eq 0 ]; then
             trainer.nnodes=${WORLD_SIZE} \
             trainer.save_freq=100 \
             trainer.test_freq=2 \
-            trainer.default_local_dir=/oss/public/user/chefengdi/ckpts/${exp_name} \
+            trainer.default_local_dir="${TRAINER_DEFAULT_LOCAL_DIR:-rl_checkpoints/reform/${exp_name}}" \
             trainer.total_epochs=160 | tee ${exp_name}.log
 
     echo "Node ${RANK}: Training finished."
@@ -330,4 +325,3 @@ fi
 
 echo "Node ${RANK}: Script execution finished."
 exit 0
-

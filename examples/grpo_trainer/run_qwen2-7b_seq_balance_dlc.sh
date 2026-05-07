@@ -8,8 +8,7 @@ export NCCL_SOCKET_IFNAME=en,eth,em,bond
 export NCCL_DEBUG=INFO
 
 project_name='Test'
-exp_name='DLC_2nodes_ray'
-export WANDB_API_KEY=50720d0546e5277bc2ac6e8ec92a78aa30ac8112
+exp_name="${EXP_NAME:-DLC_2nodes_ray}"
 
 # 获取环境变量
 MASTER_ADDR=${MASTER_ADDR}
@@ -26,13 +25,13 @@ ip_head=${MASTER_ADDR}:${RAY_PORT}
 RAY_CLUSTER_ADDRESS=${ip_head}
 RAY_NODE_WAIT_TIMEOUT=300
 
-source /nas/shared/sys2/liyizhi/conda_init.sh
-conda activate verl_public
-cd /nas/shared/sys2/liyizhi/verl_public
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Set Model Path for training
 # This path will be used by the main_ppo script
-MODEL_PATH="/nas/shared/sys2/liyizhi/models/Qwen2.5-Coder-7B" # Adjust if you want to use the 7B model or another
+MODEL_PATH="${MODEL_PATH:-models/Qwen2.5-Coder-7B}"
 
 
 
@@ -148,8 +147,8 @@ except Exception as e:
         -- \
         python3 -m verl.trainer.main_ppo \
             algorithm.adv_estimator=grpo \
-            data.train_files=/nas/shared/sys2/liyizhi/verl_public/data/gsm8k/train.parquet \
-            data.val_files=/nas/shared/sys2/liyizhi/verl_public/data/gsm8k/test.parquet \
+            data.train_files=${TRAIN_FILE:-dataset/train.parquet} \
+            data.val_files=${EVAL_FILE:-dataset/test.parquet} \
             data.train_batch_size=1024 \
             data.max_prompt_length=512 \
             data.max_response_length=1024 \

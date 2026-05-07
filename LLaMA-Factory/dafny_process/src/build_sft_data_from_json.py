@@ -166,7 +166,8 @@ print(INFO_MID, f"== After pure remove {same_cnt_pure} items remain the same. Fi
 
 # Load tokenizer with reasonable truncation length
 print(INFO_MID, "Loading tokenizer...", RESET)
-tokenizer = AutoTokenizer.from_pretrained("/nas/shared/sys2/liyizhi/models/Qwen2.5-Coder-0.5B", trust_remote_code=True)
+tokenizer_path = os.environ.get("REFORM_TOKENIZER_PATH", "models/Qwen2.5-Coder-0.5B")
+tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)
 truncate_len = 16384  # Length limit for training samples
 model_max_len = 32768  # Maximum length for tokenizer
 

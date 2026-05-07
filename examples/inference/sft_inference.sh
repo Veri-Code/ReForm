@@ -1,11 +1,11 @@
 #!/bin/bash
 {
-    source /nas/shared/sys2/liyizhi/conda_init.sh
-    conda activate llamafactory
+    [ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+    conda activate "${CONDA_ENV:-vericode}"
 
-    export PATH="/nas/shared/sys2/liyizhi/miniconda3/envs/llamafactory/bin:$PATH"
+    [ -n "${CONDA_PREFIX:-}" ] && export PATH="${CONDA_PREFIX}/bin:$PATH"
     
-    cd /nas/shared/sys2/liyizhi/LLaMA-Factory
+    cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}/LLaMA-Factory"
 
 
     
@@ -13,7 +13,7 @@
 
     for inference_dataset in a2a_lemma_kept_vanilla_cot_dev; do
 
-        output_folder=/nas/shared/sys2/chefengdi/inference_outputs/no_parse_error/${inference_dataset}
+output_folder="${OUTPUT_ROOT:-eval_logs/no_parse_error}/${inference_dataset}"
         mkdir -p $output_folder
 
         for model_size in "0.5" "3" "7" ; do

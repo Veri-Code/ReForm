@@ -5,30 +5,30 @@ import matplotlib.pyplot as plt
 import numpy as np
 def compare_training_log():
     file_list_all = [
-        "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/3B_prevent_hacking_rollout_4_scores_7-13-hour-13.json",
-        "/nas/shared/sys2/liyizhi/folder-0709/eval_log/entropy_kl/Subsetreward_entropy_3B_BoN4_entropy0.01_without_kl_scores_7-15-hour-1.json",
-        "/nas/shared/sys2/liyizhi/folder-0709/eval_log/entropy_kl/Subsetreward_entropy_3B_BoN4_no_entropy_with_kl_scores_7-15-hour-1.json",
-        "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json"
+        "eval_logs/subset_reward/scores_7-13-hour-13/3B_prevent_hacking_rollout_4_scores_7-13-hour-13.json",
+        "eval_logs/entropy_kl/Subsetreward_entropy_3B_BoN4_entropy0.01_without_kl_scores_7-15-hour-1.json",
+        "eval_logs/entropy_kl/Subsetreward_entropy_3B_BoN4_no_entropy_with_kl_scores_7-15-hour-1.json",
+        "eval_logs/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json"
         # naive reward
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_0.5B_reward_naive_0513_scores_7-12-hour-0.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_1.5B_reward_naive2_scores_7-12-hour-0.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_3B_reward_naive_0513_v5_scores_7-12-hour-0.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_7B_reward_naive_0513_scores_7-12-hour-0.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_14B_reward_naive_v4_scores_7-12-hour-0.json",
+        # "eval_logs/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_0.5B_reward_naive_0513_scores_7-12-hour-0.json",
+        # "eval_logs/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_1.5B_reward_naive2_scores_7-12-hour-0.json",
+        # "eval_logs/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_3B_reward_naive_0513_v5_scores_7-12-hour-0.json",
+        # "eval_logs/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_7B_reward_naive_0513_scores_7-12-hour-0.json",
+        # "eval_logs/naive_reward_subset_reward/scores_7-12-hour-0/DLC_4nodes_14B_reward_naive_v4_scores_7-12-hour-0.json",
 
         # subset reward
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/grpo_5ksft_0.5B_BoN4_prevent_hacking_v3_0705_9pm_scores_7-13-hour-13.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/grpo_5ksft_1.5B_BoN4_prevent_hacking_v3_0705_9pm_scores_7-13-hour-13.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/3B_prevent_hacking_rollout_4_scores_7-13-hour-13.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/7B_prevent_kl0_lr1e-5_BoN4_scores_7-13-hour-13.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward/scores_7-13-hour-13/fengdi_grpo_5ksft_14B_prevent_hacking_v3_0622_11pm_scores_7-13-hour-21.json",
+        # "eval_logs/subset_reward/scores_7-13-hour-13/grpo_5ksft_0.5B_BoN4_prevent_hacking_v3_0705_9pm_scores_7-13-hour-13.json",
+        # "eval_logs/subset_reward/scores_7-13-hour-13/grpo_5ksft_1.5B_BoN4_prevent_hacking_v3_0705_9pm_scores_7-13-hour-13.json",
+        # "eval_logs/subset_reward/scores_7-13-hour-13/3B_prevent_hacking_rollout_4_scores_7-13-hour-13.json",
+        # "eval_logs/subset_reward/scores_7-13-hour-13/7B_prevent_kl0_lr1e-5_BoN4_scores_7-13-hour-13.json",
+        # "eval_logs/subset_reward/scores_7-13-hour-13/reform_grpo_5ksft_14B_prevent_hacking_v3_0622_11pm_scores_7-13-hour-21.json",
 
         # kl_entropy
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_0.5B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_1.5B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_7B_BoN4_entropy0.02_with_kl_true_scores_7-13-hour-21.json",
-        # "/nas/shared/sys2/liyizhi/folder-0709/eval_log/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_14B_BoN4_entropy0.02_with_kl_scores_7-14-hour-0.json"
+        # "eval_logs/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_0.5B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
+        # "eval_logs/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_1.5B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
+        # "eval_logs/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_3B_BoN4_entropy0.02_with_kl_scores_7-12-hour-20.json",
+        # "eval_logs/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_7B_BoN4_entropy0.02_with_kl_true_scores_7-13-hour-21.json",
+        # "eval_logs/subset_reward_kl_entropy/scores_7-12-hour-20/Subsetreward_entropy_14B_BoN4_entropy0.02_with_kl_scores_7-14-hour-0.json"
     ]
 
     # index = 1

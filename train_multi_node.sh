@@ -9,8 +9,8 @@ export NCCL_DEBUG=INFO
 
 
 project_name='VeriCode-Multi'
-exp_name='Test'
-Project_Dir=$(pwd)
+exp_name="${EXP_NAME:-Test}"
+Project_Dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # export WANDB_MODE=disabled
 
 # Environment Variables
@@ -70,13 +70,13 @@ if [ $((GPU_TOTAL % BoN )) -ne 0 ]; then
     exit 1
 fi
 
-conda activate veri-code
-cd $Project_Dir
+conda activate "${CONDA_ENV:-vericode}"
+cd "$Project_Dir"
 
 # Training Config
-MODEL_PATH="sft_ckpts/sft_0.5B" # Adjust if you want to use the 7B model or another
-TRAIN_FILE="dataset/train.parquet"
-EVAL_FILE="dataset/test.parquet"
+MODEL_PATH="${MODEL_PATH:-sft_ckpts/sft_0.5B}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/test.parquet}"
 
 
 ##################################################################################################################
@@ -237,7 +237,7 @@ if [ "$RANK" -eq 0 ]; then
     # - batch_size * rollout.n must be divisible by total_gpus (24)
 
     ray job submit --address="http://127.0.0.1:8266" \
-        --working-dir=$Project_Dir \
+        --working-dir="$Project_Dir" \
         --runtime-env=verl/trainer/runtime_env.yaml \
         -- \
         python3 -m verl.trainer.main_ppo \
@@ -282,7 +282,7 @@ if [ "$RANK" -eq 0 ]; then
             trainer.nnodes=${WORLD_SIZE} \
             trainer.save_freq=10 \
             trainer.test_freq=2 \
-            trainer.default_local_dir=/oss/public/user/yanch/ckpts/${exp_name} \
+            trainer.default_local_dir="${TRAINER_DEFAULT_LOCAL_DIR:-rl_checkpoints/reform/${exp_name}}" \
             trainer.total_epochs=40 | tee ${exp_name}.log \
 
     echo "Node ${RANK}: Training finished."
@@ -304,4 +304,3 @@ fi
 
 echo "Node ${RANK}: Script execution finished."
 exit 0
-

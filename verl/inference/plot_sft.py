@@ -17,6 +17,27 @@ import torch.multiprocessing as mp
 import torch
 import itertools
 import logging
+import argparse
+import json
+
+DEFAULT_CKPT_ROOT = os.environ.get("REFORM_CKPT_ROOT", "rl_checkpoints")
+DEFAULT_EVAL_LOG_DIR = os.environ.get("REFORM_EVAL_LOG_DIR", "eval_logs/inference")
+DEFAULT_SFT_MODEL_PATHS = {
+    "0.5B": os.environ.get("REFORM_SFT_0_5B_PATH", "sft_ckpts/distilled/ckpt_opt/SKD_RKL-0.5B_14B"),
+    "1.5B": os.environ.get("REFORM_SFT_1_5B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-1.5B_5k_sft_opt"),
+    "3B": os.environ.get("REFORM_SFT_3B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-3B_5k_sft_opt"),
+    "7B": os.environ.get("REFORM_SFT_7B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-7B_5k_sft_opt"),
+    "14B": os.environ.get("REFORM_SFT_14B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-14B_5k_sft_opt"),
+    "32B": os.environ.get("REFORM_SFT_32B_PATH", "sft_ckpts/saves/Qwen2.5-Coder-32B_5k_sft_opt"),
+}
+DEFAULT_QWEN_CODER_PATHS = {
+    "0.5B": os.environ.get("REFORM_QWEN_CODER_0_5B_PATH", "Qwen/Qwen2.5-Coder-0.5B"),
+    "1.5B": os.environ.get("REFORM_QWEN_CODER_1_5B_PATH", "Qwen/Qwen2.5-Coder-1.5B"),
+    "3B": os.environ.get("REFORM_QWEN_CODER_3B_PATH", "Qwen/Qwen2.5-Coder-3B"),
+    "7B": os.environ.get("REFORM_QWEN_CODER_7B_PATH", "Qwen/Qwen2.5-Coder-7B"),
+    "14B": os.environ.get("REFORM_QWEN_CODER_14B_PATH", "Qwen/Qwen2.5-Coder-14B"),
+    "32B": os.environ.get("REFORM_QWEN_CODER_32B_PATH", "Qwen/Qwen2.5-Coder-32B"),
+}
 
 
 def setup_logging(log_dir, log_filename='plot.log'):
@@ -67,7 +88,7 @@ def parse_args():
     parser.add_argument('--config', type=str, help='Path to config file (yaml or json)')
     
     # Direct arguments that can override config file
-    parser.add_argument('--base_path', type=str, default="/oss/public/user/chefengdi/ckpts",
+    parser.add_argument('--base_path', type=str, default=DEFAULT_CKPT_ROOT,
                       help='Base path to model checkpoints')
     parser.add_argument('--exp_names', nargs='+', help='List of experiment names to compare')
     parser.add_argument('--global_steps', nargs='+', type=int, default=[20, 40, 100],
@@ -91,34 +112,16 @@ def load_config(config_path: str) -> dict:
         raise ValueError("Config file must be either yaml or json")
 
 def get_model_path(exp_name: str):
-    if '0.5B' in exp_name:
-        model_path = "/oss/public/user/xuxu/distilled/ckpt_opt/SKD_RKL-0.5B_14B"
-    elif '1.5B' in exp_name:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-1.5B_5k_sft_opt"
-    elif '3B' in exp_name:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-3B_5k_sft_opt"
-    elif '7B' in exp_name:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-7B_5k_sft_opt"
-    elif '14B' in exp_name:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-14B_5k_sft_opt"
-    else:
-        model_path = "/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-3B_5k_sft_opt"
-    return model_path
+    for model_size, model_path in DEFAULT_SFT_MODEL_PATHS.items():
+        if model_size in exp_name:
+            return model_path
+    return DEFAULT_SFT_MODEL_PATHS["3B"]
 
 def get_qwen_coder_model_path(exp_name: str):
-    if '0.5B' in exp_name:
-        model_path = "/cpfs04/user/liyizhi/models/Qwen2.5-Coder-0.5B"
-    elif '1.5B' in exp_name:
-        model_path = "/cpfs04/user/liyizhi/models/Qwen2.5-Coder-1.5B"
-    elif '3B' in exp_name:
-        model_path = "/cpfs04/user/liyizhi/models/Qwen2.5-Coder-3B"
-    elif '7B' in exp_name:
-        model_path = "/cpfs04/user/liyizhi/models/Qwen2.5-Coder-7B"
-    elif '14B' in exp_name:
-        model_path = "/cpfs04/user/liyizhi/models/Qwen2.5-Coder-14B"
-    elif '32B' in exp_name:
-        model_path = "/cpfs04/user/liyizhi/models/Qwen2.5-Coder-32B"
-    return model_path
+    for model_size, model_path in DEFAULT_QWEN_CODER_PATHS.items():
+        if model_size in exp_name:
+            return model_path
+    return DEFAULT_QWEN_CODER_PATHS["3B"]
 
 
 def run_single_eval(task_with_gpu):
@@ -152,7 +155,7 @@ def run_single_eval(task_with_gpu):
         step_name = os.path.basename(os.path.dirname(model_path))
         
         # Get base log directory and update output directory
-        log_dir = config.trainer.get('output_dir', "/nas/shared/sys2/chefengdi/dafny_full_log/")
+        log_dir = config.trainer.get('output_dir', DEFAULT_EVAL_LOG_DIR)
         cpu_num = config.data.get('cpu_num', 8)
         config.trainer.output_dir = os.path.join(log_dir, f"{exp_name}", f"{step_name}")
         
@@ -247,7 +250,7 @@ def main(cfg: DictConfig) -> None:
         "3B"
     ])
     model_paths = plot_cfg.get('base_paths', [
-        "/oss/public/user/chefengdi/ckpts"
+        DEFAULT_CKPT_ROOT
     ])
     global_steps =[0]
     shot_numbers = plot_cfg.get('shot_numbers', [8])

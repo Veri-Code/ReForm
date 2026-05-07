@@ -84,7 +84,7 @@ class RLHFDataset(Dataset):
                  prompt_key: str = 'prompt',
                  image_key: str = 'images',
                  max_prompt_length: int = 1024,
-                 cache_dir: str = '~/.cache/verl/rlhf',
+                 cache_dir: str = '.cache/verl/rlhf',
                  chat_template_func: Optional[Callable] = None,
                  return_raw_chat: bool = False,
                  truncation: str = 'error',

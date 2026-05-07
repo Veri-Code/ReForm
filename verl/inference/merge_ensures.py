@@ -5,13 +5,16 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 from tqdm import tqdm
 
-eval_result_dir = "/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/sft_ckpt/saves"
+eval_result_dir = os.environ.get("REFORM_EVAL_RESULT_DIR", "eval_logs/3B_sft_128/sft_ckpt/saves")
 eval_result_file = os.path.join(eval_result_dir, "eval_results.json")
 
-eval_result_baseline_dir = "/nas/shared/sys2/chefengdi/eval_log/DLC_naive_128/DLC_4nodes_3B_reward_naive_0513_v5/global_step_60"
-eval_result_baseline_file = os.path.join(eval_result_dir, "eval_results.json")
+eval_result_baseline_dir = os.environ.get(
+    "REFORM_BASELINE_EVAL_RESULT_DIR",
+    "eval_logs/DLC_naive_128/DLC_4nodes_3B_reward_naive_0513_v5/global_step_60",
+)
+eval_result_baseline_file = os.path.join(eval_result_baseline_dir, "eval_results.json")
 
-output_folder = "/nas/shared/sys2/liyizhi/folder-0630/sft_all_merge_128"
+output_folder = os.environ.get("REFORM_MERGED_ENSURES_DIR", "eval_logs/sft_all_merge_128")
 os.makedirs(output_folder, exist_ok=True)
 with open(eval_result_file, 'r', encoding='utf-8') as file:
     json_data = json.load(file)
@@ -148,8 +151,8 @@ def process_single_index(index, BoN=128):
 process_single_index(9)
 
 # for t in range(10):
-#     # os.system(f"cat /nas/shared/sys2/chefengdi/eval_log/3B_sft_128/sft_ckpt/saves/0/out-{numbers[t]}.txt")
-#     with open(f"/nas/shared/sys2/chefengdi/eval_log/3B_sft_128/sft_ckpt/saves/0/out-{numbers[t]}.txt", "r") as g:
+#     # os.system(f"cat eval_logs/3B_sft_128/sft_ckpt/saves/0/out-{numbers[t]}.txt")
+#     with open(f"eval_logs/3B_sft_128/sft_ckpt/saves/0/out-{numbers[t]}.txt", "r") as g:
 #         temp = g.readlines()
 #         print(temp)
 #     print("----------")

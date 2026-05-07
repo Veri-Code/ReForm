@@ -3,12 +3,11 @@
 # Conda Env Activation
 
 # Custom
-export WANDB_API_KEY=xxxx
-export WANDB_PROJECT=xxxx
+export WANDB_PROJECT="${WANDB_PROJECT:-reform}"
 
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
-cd Path to LLaMA-Factory
+cd "${LLAMA_FACTORY_DIR:-.}"
 
 # Custom
 config_dir=examples/train_full_opt

@@ -10,8 +10,7 @@ export NCCL_DEBUG=INFO
 
 # Project settings
 project_name='Inference'
-exp_name='fengdi_DLC_test'
-# export WANDB_API_KEY=2ca4169be643483a1a1694f52e6e0a90a594a021
+exp_name="${EXP_NAME:-reform_DLC_test}"
 
 # Environment Variables
 MASTER_ADDR=${MASTER_ADDR}
@@ -24,7 +23,7 @@ MEM_PER_TASK=$((1200 * 1024 ** 3))
 GPU_TOTAL=$((GPUS_PER_NODE * WORLD_SIZE))
 
 # Arrays for experiment names and global steps
-ckpt_dir=("/cpfs04/user/liyizhi/models/Qwen2.5-Coder-3B")
+ckpt_dir=("${CHECKPOINT_ROOT:-rl_checkpoints}/" "${CHECKPOINT_ROOT:-rl_checkpoints}/")
 
 # Calculate total tasks (all pairs)
 TOTAL_TASKS=${#ckpt_dir[@]}
@@ -35,13 +34,13 @@ BATCH_SIZE=1024
 PPO_MINI_BATCH_SIZE=256
 TENSOR_MODEL_PARALLEL_SIZE=1
 
-TRAIN_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_not_trained_sft/train.parquet"
-EVAL_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_v3/test.parquet"
+TRAIN_FILE="${TRAIN_FILE:-dataset/dataset5k_not_trained_sft/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/dataset5k_v3/test.parquet}"
 
 # 激活环境
-source /nas/shared/sys2/liyizhi/conda_init.sh
-conda activate /nas/shared/sys2/chefengdi/conda/verl_clone
-cd /nas/shared/sys2/liyizhi/fengdi_tinyzero
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # 循环处理分配给当前节点的所有模型
 for ((i=0; i<TOTAL_TASKS; i++)); do
@@ -52,7 +51,7 @@ for ((i=0; i<TOTAL_TASKS; i++)); do
         current_ckpt_dir=${ckpt_dir[$i]}
         
         # 创建每个模型独立的输出目录
-        OUTPUT_DIR="/nas/shared/sys2/chefengdi/report_shots/qwen_coder_3B_128/"
+        OUTPUT_DIR="eval_logs/${exp_name}"
         mkdir -p $OUTPUT_DIR
         
         echo "Node ${RANK} processing task $((i+1)): exp_name=${current_exp_name}, global_step=${current_global_step}"

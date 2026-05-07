@@ -10,6 +10,13 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, AutoProcessor
 
 os.environ["VLLM_WORKER_MULTIPROC_METHOD"] = "spawn"
 
+DEFAULT_MERGE_MODEL_PATHS = {
+    "0.5B": os.environ.get("REFORM_MERGE_MODEL_0_5B", "sft_ckpts/distilled/ckpt_opt/SKD_RKL-0.5B_14B"),
+    "3B": os.environ.get("REFORM_MERGE_MODEL_3B", "sft_ckpts/Qwen2.5-Coder-3B_5k_sft_opt"),
+    "7B": os.environ.get("REFORM_MERGE_MODEL_7B", "sft_ckpts/Qwen2.5-Coder-7B_5k_sft_opt"),
+    "14B": os.environ.get("REFORM_MERGE_MODEL_14B", "sft_ckpts/saves/Qwen2.5-Coder-14B_5k_sft_opt"),
+}
+
 def retrieve_text(output):
     # Potentially expensive call
     return output.outputs[0].text
@@ -72,21 +79,25 @@ class QwenModel(BaseModel):
 
 
                 if "0.5B" in model_name_or_path:
-                    model = AutoModelForCausalLM.from_pretrained("/oss/public/user/xuxu/distilled/ckpt_opt/SKD_RKL-0.5B_14B")
-                    tokenizer = AutoTokenizer.from_pretrained("/oss/public/user/xuxu/distilled/ckpt_opt/SKD_RKL-0.5B_14B")
-                    processor = AutoProcessor.from_pretrained("/oss/public/user/xuxu/distilled/ckpt_opt/SKD_RKL-0.5B_14B")
+                    model_path = DEFAULT_MERGE_MODEL_PATHS["0.5B"]
+                    model = AutoModelForCausalLM.from_pretrained(model_path)
+                    tokenizer = AutoTokenizer.from_pretrained(model_path)
+                    processor = AutoProcessor.from_pretrained(model_path)
                 if "3B" or "3b" in model_name_or_path:
-                    model = AutoModelForCausalLM.from_pretrained("/nas/shared/sys2/liyizhi/Qwen2.5-Coder-3B_5k_sft_opt")
-                    tokenizer = AutoTokenizer.from_pretrained("/nas/shared/sys2/liyizhi/Qwen2.5-Coder-3B_5k_sft_opt")
-                    processor = AutoProcessor.from_pretrained("/nas/shared/sys2/liyizhi/Qwen2.5-Coder-3B_5k_sft_opt")
+                    model_path = DEFAULT_MERGE_MODEL_PATHS["3B"]
+                    model = AutoModelForCausalLM.from_pretrained(model_path)
+                    tokenizer = AutoTokenizer.from_pretrained(model_path)
+                    processor = AutoProcessor.from_pretrained(model_path)
                 elif "7B" in model_name_or_path:
-                    model = AutoModelForCausalLM.from_pretrained("/nas/shared/sys2/liyizhi/Qwen2.5-Coder-7B_5k_sft_opt")
-                    tokenizer = AutoTokenizer.from_pretrained("/nas/shared/sys2/liyizhi/Qwen2.5-Coder-7B_5k_sft_opt")
-                    processor = AutoProcessor.from_pretrained("/nas/shared/sys2/liyizhi/Qwen2.5-Coder-7B_5k_sft_opt")
+                    model_path = DEFAULT_MERGE_MODEL_PATHS["7B"]
+                    model = AutoModelForCausalLM.from_pretrained(model_path)
+                    tokenizer = AutoTokenizer.from_pretrained(model_path)
+                    processor = AutoProcessor.from_pretrained(model_path)
                 elif "14B" in model_name_or_path:
-                    model = AutoModelForCausalLM.from_pretrained("/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-14B_5k_sft_opt")
-                    tokenizer = AutoTokenizer.from_pretrained("/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-14B_5k_sft_opt")
-                    processor = AutoProcessor.from_pretrained("/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/Qwen2.5-Coder-14B_5k_sft_opt")
+                    model_path = DEFAULT_MERGE_MODEL_PATHS["14B"]
+                    model = AutoModelForCausalLM.from_pretrained(model_path)
+                    tokenizer = AutoTokenizer.from_pretrained(model_path)
+                    processor = AutoProcessor.from_pretrained(model_path)
                 model.load_state_dict(model_state)
 
                 model.save_pretrained(folder_name)

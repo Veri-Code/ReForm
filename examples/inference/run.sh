@@ -1,5 +1,5 @@
 project_name='Inference'
-exp_name='SpecRefinement-3B'
+exp_name="${EXP_NAME:-SpecRefinement-3B}"
 global_steps=20
 WORLDSIZE=1
 GPUS_PER_NODE=8 # Depend on your need
@@ -16,18 +16,17 @@ BATCH_SIZE=1024  # Changed from 1024 to 1008 to make it divisible by 24 (GPU_TOT
 PPO_MINI_BATCH_SIZE=256  # Changed from 256 to 168 to make it divisible by 24 and 1008
 TENSOR_MODEL_PARALLEL_SIZE=1
 
-# export WANDB_API_KEY=5edb8fccc26de7f9c2baeb46780bcd22d0588c62
-source /nas/shared/sys2/liyizhi/conda_init.sh
-conda activate verl_public
-cd /nas/shared/sys2/liyizhi/test_tinyzero3
+[ -n "${CONDA_INIT:-}" ] && source "$CONDA_INIT"
+conda activate "${CONDA_ENV:-vericode}"
+cd "${REFORM_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
-MODEL_PATH="/oss/public/user/chefengdi/ckpts/${exp_name}/global_step_${global_steps}/actor"
-# MODEL_PATH="/nas/shared/sys2/liyizhi/LLaMA-Factory/saves/a2a_lemma_kept_wcompiler_cot/Qwen2.5-Coder-3B_a2a_lemma_kept_5k_wcompiler_1mid_cot_sft_new"
+MODEL_PATH="${MODEL_PATH:-rl_checkpoints/${exp_name}/global_step_${global_steps}/actor}"
+# MODEL_PATH="${MODEL_PATH:-sft_ckpts/sft_3B}"
 
 # Adjust if you want to use the 7B model or another
-# MODEL_PATH="/root/Qwen2.5-Coder-3B_5k_sft_opt" # Adjust if you want to use the 7B model or another
-TRAIN_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_not_trained_sft/train.parquet"
-EVAL_FILE="/nas/shared/sys2/liyizhi/TinyZero_Dafny_0403/dataset5k_not_trained_sft/test.parquet"
+# MODEL_PATH="${MODEL_PATH:-sft_ckpts/sft_7B}"
+TRAIN_FILE="${TRAIN_FILE:-dataset/dataset5k_not_trained_sft/train.parquet}"
+EVAL_FILE="${EVAL_FILE:-dataset/dataset5k_not_trained_sft/test.parquet}"
 python3 -m verl.inference.eval \
     data.path=$EVAL_FILE \
     data.filter_overlong_prompts=True \
@@ -45,5 +44,5 @@ python3 -m verl.inference.eval \
     trainer.n_gpus_per_node=${GPUS_PER_NODE} \
     trainer.nnodes=${WORLDSIZE} \
     trainer.save_output=False \
-    trainer.output_dir=/nas/shared/sys2/chefengdi/dafny_full_log/ \
+    trainer.output_dir="eval_logs/${exp_name}" \
 # rollout.top_k 0 for hf rollout, -1 for vllm rollout

@@ -1,7 +1,7 @@
 data:
   tokenizer: null
-  train_files: ~/data/rlhf/gsm8k/train.parquet
-  val_files: ~/data/rlhf/gsm8k/test.parquet
+  train_files: data/rlhf/gsm8k/train.parquet
+  val_files: data/rlhf/gsm8k/test.parquet
   prompt_key: prompt
   reward_fn_key: data_source
   max_prompt_length: 512
@@ -19,7 +19,7 @@ data:
 actor_rollout_ref:
   hybrid_engine: True
   model:
-    path: ~/models/deepseek-llm-7b-chat
+    path: models/deepseek-llm-7b-chat
     external_lib: null
     override_config: {}
     enable_gradient_checkpointing: False
@@ -133,7 +133,7 @@ critic:
     total_training_steps: -1  # must be override by program
     weight_decay: 0.01
   model:
-    path: ~/models/deepseek-llm-7b-chat
+    path: models/deepseek-llm-7b-chat
     tokenizer_path: ${actor_rollout_ref.model.path}
     override_config: {}
     external_lib: ${actor_rollout_ref.model.external_lib}
@@ -178,7 +178,7 @@ reward_model:
     seed: 1
   model:
     input_tokenizer: ${actor_rollout_ref.model.path}  # set this to null if the chat template is identical
-    path: ~/models/FsfairX-LLaMA3-RM-v0.1
+    path: models/FsfairX-LLaMA3-RM-v0.1
     external_lib: ${actor_rollout_ref.model.external_lib}
   load_weight: True
   param_offload: False
